@@ -1,7 +1,7 @@
 package com.petrotal.ahcbackend.controller;
 
 import com.petrotal.ahcbackend.dto.ResponseDto;
-import com.petrotal.ahcbackend.service.EquipmentService;
+import com.petrotal.ahcbackend.service.data.EquipmentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

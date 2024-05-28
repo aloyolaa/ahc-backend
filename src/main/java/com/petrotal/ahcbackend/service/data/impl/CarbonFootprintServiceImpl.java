@@ -1,13 +1,13 @@
-package com.petrotal.ahcbackend.service.impl;
+package com.petrotal.ahcbackend.service.data.impl;
 
 import com.petrotal.ahcbackend.dto.CarbonFootprintDto;
 import com.petrotal.ahcbackend.entity.Data;
 import com.petrotal.ahcbackend.entity.EmissionFactor;
 import com.petrotal.ahcbackend.entity.GlobalWarmingPotential;
-import com.petrotal.ahcbackend.service.CarbonFootprintService;
-import com.petrotal.ahcbackend.service.DataAccessService;
-import com.petrotal.ahcbackend.service.EmissionFactorService;
-import com.petrotal.ahcbackend.service.GlobalWarmingPotentialService;
+import com.petrotal.ahcbackend.service.data.CarbonFootprintService;
+import com.petrotal.ahcbackend.service.data.DataAccessService;
+import com.petrotal.ahcbackend.service.data.EmissionFactorService;
+import com.petrotal.ahcbackend.service.data.GlobalWarmingPotentialService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

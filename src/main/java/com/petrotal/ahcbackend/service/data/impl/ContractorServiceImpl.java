@@ -1,11 +1,11 @@
-package com.petrotal.ahcbackend.service.impl;
+package com.petrotal.ahcbackend.service.data.impl;
 
 import com.petrotal.ahcbackend.dto.ContractorDto;
 import com.petrotal.ahcbackend.entity.Contractor;
 import com.petrotal.ahcbackend.exception.DataAccessExceptionImpl;
 import com.petrotal.ahcbackend.mapper.ContractorMapper;
 import com.petrotal.ahcbackend.repository.ContractorRepository;
-import com.petrotal.ahcbackend.service.ContractorService;
+import com.petrotal.ahcbackend.service.data.ContractorService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataAccessException;
@@ -27,6 +27,17 @@ public class ContractorServiceImpl implements ContractorService {
         try {
             return contractorRepository.findById(id)
                     .orElseThrow(() -> new EntityNotFoundException("Contratista con el ID " + id + " no existe."));
+        } catch (DataAccessException | TransactionException e) {
+            throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde.", e);
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Contractor findByName(String name) {
+        try {
+            return contractorRepository.findByName(name)
+                    .orElseThrow(() -> new EntityNotFoundException("Contratista con el nombre " + name + " no existe."));
         } catch (DataAccessException | TransactionException e) {
             throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde.", e);
         }

@@ -2,7 +2,7 @@ package com.petrotal.ahcbackend.controller;
 
 import com.petrotal.ahcbackend.dto.DataDto;
 import com.petrotal.ahcbackend.dto.ResponseDto;
-import com.petrotal.ahcbackend.service.DataAccessService;
+import com.petrotal.ahcbackend.service.data.DataAccessService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

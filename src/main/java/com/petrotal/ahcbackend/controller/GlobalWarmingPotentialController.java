@@ -2,7 +2,7 @@ package com.petrotal.ahcbackend.controller;
 
 import com.petrotal.ahcbackend.dto.GasDto;
 import com.petrotal.ahcbackend.dto.ResponseDto;
-import com.petrotal.ahcbackend.service.GlobalWarmingPotentialService;
+import com.petrotal.ahcbackend.service.data.GlobalWarmingPotentialService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

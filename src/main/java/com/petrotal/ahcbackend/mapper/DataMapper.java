@@ -7,6 +7,11 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface DataMapper {
+    @Mapping(target = "area", source = "area.id")
+    @Mapping(target = "contractor", source = "contractor.id")
+    @Mapping(target = "equipment", source = "equipment.id")
+    DataDto toDataDto(Data data);
+
     @Mapping(target = "unitOfMeasurement", ignore = true)
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "area.id", source = "area")

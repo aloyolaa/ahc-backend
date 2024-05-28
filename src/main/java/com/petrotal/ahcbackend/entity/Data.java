@@ -3,12 +3,14 @@ package com.petrotal.ahcbackend.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.time.LocalDate;
 
 @Getter
 @Setter
 @Entity
+@ToString
 @Table(name = "data")
 public class Data {
     @Id
@@ -16,7 +18,7 @@ public class Data {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(name = "voucher_number", nullable = false)
+    @Column(name = "voucher_number")
     private String voucherNumber;
 
     @Column(name = "dispatch_date", nullable = false)
@@ -31,12 +33,12 @@ public class Data {
     @Column(name = "unit_of_measurement", nullable = false)
     private String unitOfMeasurement;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "area_id", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "area_id")
     private Area area;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "contractor_id", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "contractor_id")
     private Contractor contractor;
 
     @ManyToOne(optional = false)

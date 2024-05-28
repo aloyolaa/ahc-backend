@@ -1,4 +1,4 @@
-package com.petrotal.ahcbackend.service;
+package com.petrotal.ahcbackend.service.data;
 
 import com.petrotal.ahcbackend.dto.CarbonFootprintDto;
 

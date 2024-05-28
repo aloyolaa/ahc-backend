@@ -1,6 +1,6 @@
 package com.petrotal.ahcbackend.validator;
 
-import com.petrotal.ahcbackend.service.DataAccessService;
+import com.petrotal.ahcbackend.service.data.DataAccessService;
 import com.petrotal.ahcbackend.validator.annotation.ExistsByVoucherNumber;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;

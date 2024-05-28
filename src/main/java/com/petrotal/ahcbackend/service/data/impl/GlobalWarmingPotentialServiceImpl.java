@@ -1,11 +1,11 @@
-package com.petrotal.ahcbackend.service.impl;
+package com.petrotal.ahcbackend.service.data.impl;
 
 import com.petrotal.ahcbackend.dto.GasDto;
 import com.petrotal.ahcbackend.entity.GlobalWarmingPotential;
 import com.petrotal.ahcbackend.exception.DataAccessExceptionImpl;
 import com.petrotal.ahcbackend.mapper.GasMapper;
 import com.petrotal.ahcbackend.repository.GlobalWarmingPotentialRepository;
-import com.petrotal.ahcbackend.service.GlobalWarmingPotentialService;
+import com.petrotal.ahcbackend.service.data.GlobalWarmingPotentialService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataAccessException;

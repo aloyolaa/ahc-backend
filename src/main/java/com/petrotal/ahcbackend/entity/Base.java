@@ -1,10 +1,7 @@
 package com.petrotal.ahcbackend.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
@@ -19,4 +16,12 @@ public class Base {
 
     @Column(name = "name", nullable = false)
     private String name;
+
+    @Override
+    public String toString() {
+        return "Base{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
+    }
 }

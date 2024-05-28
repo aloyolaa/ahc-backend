@@ -18,4 +18,11 @@ public class Area extends Base {
     public Area(Long id, String name) {
         super(id, name);
     }
+
+    @Override
+    public String toString() {
+        return "Area{" +
+                super.toString() +
+                "}";
+    }
 }

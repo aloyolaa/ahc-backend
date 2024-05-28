@@ -1,11 +1,11 @@
-package com.petrotal.ahcbackend.service.impl;
+package com.petrotal.ahcbackend.service.data.impl;
 
 import com.petrotal.ahcbackend.dto.EquipmentDto;
 import com.petrotal.ahcbackend.entity.Equipment;
 import com.petrotal.ahcbackend.exception.DataAccessExceptionImpl;
 import com.petrotal.ahcbackend.mapper.EquipmentMapper;
 import com.petrotal.ahcbackend.repository.EquipmentRepository;
-import com.petrotal.ahcbackend.service.EquipmentService;
+import com.petrotal.ahcbackend.service.data.EquipmentService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataAccessException;
@@ -27,6 +27,18 @@ public class EquipmentServiceImpl implements EquipmentService {
         try {
             return equipmentRepository.findById(id)
                     .orElseThrow(() -> new EntityNotFoundException("Equipamiento con el ID " + id + " no existe."));
+        } catch (DataAccessException | TransactionException e) {
+            throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde.", e);
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Equipment findByName(String name) {
+        try {
+            return equipmentRepository.findByName(name)
+                    .orElseThrow(() -> new EntityNotFoundException("Equipamiento con el nombre " + name + " no existe.")
+                    );
         } catch (DataAccessException | TransactionException e) {
             throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde.", e);
         }
