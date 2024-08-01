@@ -40,7 +40,7 @@ public class CarbonFootprintServiceImpl implements CarbonFootprintService {
         if (emissionFactorByYearOptional.isPresent() && globalWarmingPotentialByYearOptional.isPresent()) {
             double consumption = dataAccessService.findByYear(Year.now().getValue())
                     .stream()
-                    .filter(d -> d.getEquipment().getType().equals(consumptionType) && d.getDescription().equals(fuelType))
+                    .filter(d -> d.getEquipment().getType() != null && d.getEquipment().getType().equals(consumptionType) && d.getDescription().equals(fuelType))
                     .mapToDouble(Data::getConsumption)
                     .sum();
 

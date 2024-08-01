@@ -16,7 +16,7 @@ import lombok.Setter;
         @UniqueConstraint(name = "uc_equipment_name", columnNames = {"name"})
 })
 public class Equipment extends Base {
-    @Column(name = "type", nullable = false)
+    @Column(name = "type")
     private String type;
 
     public Equipment(Long id, String name, String type) {

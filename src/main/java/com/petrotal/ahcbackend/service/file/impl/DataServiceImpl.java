@@ -166,7 +166,7 @@ public class DataServiceImpl implements DataService {
 
         if (cell != null && cell.getCellType() != CellType.BLANK) {
             name = formatter.formatCellValue(cell).trim().toUpperCase();
-            return findByName.apply(name);
+            return !name.contains("COMUNIDAD") ? findByName.apply(name) : null;
         }
 
         return null;
