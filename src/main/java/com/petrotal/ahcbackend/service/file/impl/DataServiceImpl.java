@@ -5,7 +5,6 @@ import com.petrotal.ahcbackend.exception.FileProcessingException;
 import com.petrotal.ahcbackend.exception.InvalidFileFormatException;
 import com.petrotal.ahcbackend.service.data.AreaService;
 import com.petrotal.ahcbackend.service.data.ContractorService;
-import com.petrotal.ahcbackend.service.data.DataAccessService;
 import com.petrotal.ahcbackend.service.data.EquipmentService;
 import com.petrotal.ahcbackend.service.file.DataService;
 import lombok.RequiredArgsConstructor;
@@ -30,44 +29,45 @@ public class DataServiceImpl implements DataService {
     private final AreaService areaService;
     private final ContractorService contractorService;
     private final EquipmentService equipmentService;
-    private final DataAccessService dataAccessService;
     private static final String DIESEL_SHEET = "Diesel Operaciones";
 
-    public void manageData(MultipartFile file, String sheetName) {
+    public List<Data> manageData(MultipartFile file, String sheetName) {
         Workbook workbook = openWorkbook(file);
         Sheet sheet = validateSheet(workbook, sheetName);
 
         List<Data> data = new ArrayList<>();
 
-        //System.out.println(sheet.getSheetName());
         int lastRowNum = sheet.getLastRowNum();
-        //System.out.println(lastRowNum);
+        log.info("Total de Filas: {}", lastRowNum);
 
         for (int i = getInitialRow(sheetName); i <= getTotalRows(sheet) + 1; i++) {
-            System.out.println("Row: " + (i + 1));
+            log.info("Fila: {}", i + 1);
             Data d = new Data();
 
             LocalDate dispatchDate = getDispatchDate(sheet, i);
 
             if (dispatchDate.getYear() > 2020) {
                 Double consumption = getConsumption(sheet, i);
-                Equipment equipment = getBase(sheet, i, 3, equipmentService::findByName);
 
-                if (consumption != null && consumption > 0 && equipment != null) {
-                    d.setVoucherNumber(getVoucherNumber(sheet, i));
-                    d.setDispatchDate(dispatchDate);
-                    d.setDescription(getDescription(sheetName));
-                    d.setConsumption(consumption);
-                    d.setArea(getBase(sheet, i, 1, areaService::findByName));
-                    d.setContractor(getBase(sheet, i, 2, contractorService::findByName));
-                    d.setEquipment(equipment);
-                    data.add(d);
-                    System.out.println(d);
+                if (consumption != null && consumption > 0) {
+                    Equipment equipment = getBase(sheet, i, 3, equipmentService::findByName);
+
+                    if (equipment != null) {
+                        d.setVoucherNumber(getVoucherNumber(sheet, i));
+                        d.setDispatchDate(dispatchDate);
+                        d.setDescription(getDescription(sheetName));
+                        d.setConsumption(consumption);
+                        d.setArea(getBase(sheet, i, 1, areaService::findByName));
+                        d.setContractor(getBase(sheet, i, 2, contractorService::findByName));
+                        d.setEquipment(equipment);
+                        data.add(d);
+                        log.info("Data: {}", d);
+                    }
                 }
             }
         }
 
-        dataAccessService.saveAll(data);
+        return data;
     }
 
     private int getInitialRow(String sheetName) {
@@ -82,12 +82,10 @@ public class DataServiceImpl implements DataService {
     public String getVoucherNumber(Sheet sheet, int rowIndex) {
         int column = sheet.getSheetName().equals(DIESEL_SHEET) ? 19 : 12;
         Cell cell = getCell(sheet, rowIndex, column);
-        System.out.println("extract vou");
 
         DataFormatter formatter = new DataFormatter();
 
         if (cell != null && cell.getCellType() != CellType.BLANK) {
-            //return cell.toString();
             return formatter.formatCellValue(cell);
         }
 
@@ -98,15 +96,22 @@ public class DataServiceImpl implements DataService {
     public LocalDate getDispatchDate(Sheet sheet, int rowIndex) {
         int column = sheet.getSheetName().equals(DIESEL_SHEET) ? 2 : 0;
         Cell cell = getCell(sheet, rowIndex, column);
-        System.out.println("ext fecha");
-        System.out.println("t fecha");
 
         if (cell != null && cell.getCellType() != CellType.BLANK) {
             DataFormatter formatter = new DataFormatter();
             DateTimeFormatter dtf = DateTimeFormatter.ofPattern("M/d/yy");
 
             String cellStringValue = formatter.formatCellValue(cell);
-            System.out.println(cellStringValue);
+
+            if (cell.getCellType() == CellType.FORMULA) {
+                log.info("Es formula");
+                log.info(cellStringValue);
+                String cellReference = cellStringValue.substring(1);
+                int row = Integer.parseInt(cellReference.replaceAll("\\D", "")); //[^0-9]
+                log.info("Fila Referenciada: {}", row);
+
+                return getDispatchDate(sheet, row - 1);
+            }
 
             if (!cellStringValue.isEmpty()) {
                 try {
@@ -132,7 +137,6 @@ public class DataServiceImpl implements DataService {
             try {
                 return Double.parseDouble(cellValue);
             } catch (NumberFormatException e) {
-                //log.error("Valor no numérico encontrado en la fila {}, columna {}: {}", rowIndex, column, cellValue, e);
                 return null;
             }
         }
@@ -161,7 +165,7 @@ public class DataServiceImpl implements DataService {
         String name;
 
         if (cell != null && cell.getCellType() != CellType.BLANK) {
-            name = formatter.formatCellValue(cell).trim();
+            name = formatter.formatCellValue(cell).trim().toUpperCase();
             return findByName.apply(name);
         }
 
