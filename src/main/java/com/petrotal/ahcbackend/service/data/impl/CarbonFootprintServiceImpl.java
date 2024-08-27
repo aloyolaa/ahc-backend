@@ -9,11 +9,14 @@ import com.petrotal.ahcbackend.service.data.DataAccessService;
 import com.petrotal.ahcbackend.service.data.EmissionFactorService;
 import com.petrotal.ahcbackend.service.data.GlobalWarmingPotentialService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.Year;
+import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CarbonFootprintServiceImpl implements CarbonFootprintService {
@@ -23,22 +26,25 @@ public class CarbonFootprintServiceImpl implements CarbonFootprintService {
 
     @Override
     public CarbonFootprintDto getCarbonFootprint() {
+        List<Data> data = dataAccessService.findByYear(Year.now().getValue());
+        log.info("data {}", data.size());
         return new CarbonFootprintDto(
-                calculateCarbonFootprint("DIESEL", "STATIONARY-MACHINERY"),
-                calculateCarbonFootprint("GASOLINE", "STATIONARY-MACHINERY"),
-                calculateCarbonFootprint("DIESEL", "MOBILE-MACHINERY")
+                calculateCarbonFootprint("DIESEL", "STATIONARY-MACHINERY", data),
+                calculateCarbonFootprint("GASOLINE", "STATIONARY-MACHINERY", data),
+                calculateCarbonFootprint("DIESEL", "MOBILE-MACHINERY", data),
+                calculateCarbonFootprint("GASOLINE", "MOBILE-MACHINERY", data)
         );
     }
 
     @Override
-    public Double calculateCarbonFootprint(String fuelType, String consumptionType) {
+    public Double calculateCarbonFootprint(String fuelType, String consumptionType, List<Data> data) {
         Integer year = Year.now().getValue();
 
         Optional<EmissionFactor> emissionFactorByYearOptional = emissionFactorService.findByYearOptional(year, fuelType, consumptionType);
         Optional<GlobalWarmingPotential> globalWarmingPotentialByYearOptional = globalWarmingPotentialService.findByYearOptional(year);
 
         if (emissionFactorByYearOptional.isPresent() && globalWarmingPotentialByYearOptional.isPresent()) {
-            double consumption = dataAccessService.findByYear(Year.now().getValue())
+            double consumption = data
                     .stream()
                     .filter(d -> d.getEquipment().getType() != null && d.getEquipment().getType().equals(consumptionType) && d.getDescription().equals(fuelType))
                     .mapToDouble(Data::getConsumption)
