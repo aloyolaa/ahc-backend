@@ -1,9 +1,13 @@
 package com.petrotal.ahcbackend.dto;
 
 public record CarbonFootprintDto(
-        Double stationaryMachineryDiesel,
-        Double stationaryMachineryGasoline,
-        Double mobileMachineryDiesel,
-        Double mobileMachineryGasoline
+        Double stationaryMachineryDieselConsumption,
+        Double stationaryMachineryDieselCalculate,
+        Double stationaryMachineryGasolineConsumption,
+        Double stationaryMachineryGasolineCalculate,
+        Double mobileMachineryDieselConsumption,
+        Double mobileMachineryDieselCalculate,
+        Double mobileMachineryGasolineConsumption,
+        Double mobileMachineryGasolineCalculate
 ) {
 }

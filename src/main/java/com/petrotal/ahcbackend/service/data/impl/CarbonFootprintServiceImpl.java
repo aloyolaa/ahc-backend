@@ -21,35 +21,44 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class CarbonFootprintServiceImpl implements CarbonFootprintService {
     private final DataAccessService dataAccessService;
+    private final ConsumptionServiceImpl consumptionService;
     private final EmissionFactorService emissionFactorService;
     private final GlobalWarmingPotentialService globalWarmingPotentialService;
+
+    private static final String DIESEL = "DIESEL";
+    private static final String GASOLINE = "GASOLINE";
+    private static final String STATIONARY_MACHINERY = "STATIONARY-MACHINERY";
+    private static final String MOBILE_MACHINERY = "MOBILE-MACHINERY";
 
     @Override
     public CarbonFootprintDto getCarbonFootprint() {
         List<Data> data = dataAccessService.findByYear(Year.now().getValue());
-        log.info("data {}", data.size());
+
+        Double stationaryMachineryDieselConsumption = consumptionService.calculateConsumption(DIESEL, STATIONARY_MACHINERY, data);
+        Double stationaryMachineryGasolineConsumption = consumptionService.calculateConsumption(GASOLINE, STATIONARY_MACHINERY, data);
+        Double mobileMachineryDieselConsumption = consumptionService.calculateConsumption(DIESEL, MOBILE_MACHINERY, data);
+        Double mobileMachineryGasolineConsumption = consumptionService.calculateConsumption(GASOLINE, MOBILE_MACHINERY, data);
+
         return new CarbonFootprintDto(
-                calculateCarbonFootprint("DIESEL", "STATIONARY-MACHINERY", data),
-                calculateCarbonFootprint("GASOLINE", "STATIONARY-MACHINERY", data),
-                calculateCarbonFootprint("DIESEL", "MOBILE-MACHINERY", data),
-                calculateCarbonFootprint("GASOLINE", "MOBILE-MACHINERY", data)
+                stationaryMachineryDieselConsumption,
+                calculateCarbonFootprint(DIESEL, STATIONARY_MACHINERY, stationaryMachineryDieselConsumption),
+                stationaryMachineryGasolineConsumption,
+                calculateCarbonFootprint(GASOLINE, STATIONARY_MACHINERY, stationaryMachineryGasolineConsumption),
+                mobileMachineryDieselConsumption,
+                calculateCarbonFootprint(DIESEL, MOBILE_MACHINERY, mobileMachineryDieselConsumption),
+                mobileMachineryGasolineConsumption,
+                calculateCarbonFootprint(GASOLINE, MOBILE_MACHINERY, mobileMachineryGasolineConsumption)
         );
     }
 
     @Override
-    public Double calculateCarbonFootprint(String fuelType, String consumptionType, List<Data> data) {
+    public Double calculateCarbonFootprint(String fuelType, String consumptionType, Double consumption) {
         Integer year = Year.now().getValue();
 
         Optional<EmissionFactor> emissionFactorByYearOptional = emissionFactorService.findByYearOptional(year, fuelType, consumptionType);
         Optional<GlobalWarmingPotential> globalWarmingPotentialByYearOptional = globalWarmingPotentialService.findByYearOptional(year);
 
         if (emissionFactorByYearOptional.isPresent() && globalWarmingPotentialByYearOptional.isPresent()) {
-            double consumption = data
-                    .stream()
-                    .filter(d -> d.getEquipment().getType() != null && d.getEquipment().getType().equals(consumptionType) && d.getDescription().equals(fuelType))
-                    .mapToDouble(Data::getConsumption)
-                    .sum();
-
             EmissionFactor emissionFactor = emissionFactorByYearOptional.orElseThrow();
             GlobalWarmingPotential globalWarmingPotential = globalWarmingPotentialByYearOptional.orElseThrow();
 
