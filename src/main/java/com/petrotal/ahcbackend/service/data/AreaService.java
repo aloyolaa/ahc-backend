@@ -11,4 +11,6 @@ public interface AreaService {
     Area findByName(String name);
 
     List<AreaDto> findAll();
+
+    Area save(Area area);
 }

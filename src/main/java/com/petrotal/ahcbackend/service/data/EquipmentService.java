@@ -11,4 +11,6 @@ public interface EquipmentService {
     Equipment findByName(String name);
 
     List<EquipmentDto> findAll();
+
+    Equipment save(Equipment equipment);
 }

@@ -53,4 +53,12 @@ public class EquipmentServiceImpl implements EquipmentService {
             throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde.", e);
         }
     }
+
+    @Override
+    @Transactional
+    public Equipment save(Equipment equipment) {
+        equipment.setName(equipment.getName().toUpperCase());
+        equipment.setType(equipment.getType().toUpperCase());
+        return equipmentRepository.save(equipment);
+    }
 }

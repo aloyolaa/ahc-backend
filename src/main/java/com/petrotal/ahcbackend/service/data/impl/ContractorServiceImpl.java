@@ -52,4 +52,11 @@ public class ContractorServiceImpl implements ContractorService {
             throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde.", e);
         }
     }
+
+    @Override
+    @Transactional
+    public Contractor save(Contractor contractor) {
+        contractor.setName(contractor.getName().toUpperCase());
+        return contractorRepository.save(contractor);
+    }
 }

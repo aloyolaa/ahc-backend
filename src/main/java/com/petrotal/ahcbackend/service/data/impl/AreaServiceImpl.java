@@ -52,4 +52,11 @@ public class AreaServiceImpl implements AreaService {
             throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde.", e);
         }
     }
+
+    @Override
+    @Transactional
+    public Area save(Area area) {
+        area.setName(area.getName().toUpperCase());
+        return areaRepository.save(area);
+    }
 }

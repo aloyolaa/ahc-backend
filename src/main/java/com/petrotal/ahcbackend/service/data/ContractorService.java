@@ -11,4 +11,6 @@ public interface ContractorService {
     Contractor findByName(String name);
 
     List<ContractorDto> findAll();
+
+    Contractor save(Contractor contractor);
 }
