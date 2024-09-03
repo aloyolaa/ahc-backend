@@ -16,6 +16,8 @@ import java.time.Year;
 import java.util.List;
 import java.util.Optional;
 
+import static com.petrotal.ahcbackend.service.util.NumberFormat.formatNumber;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -39,15 +41,28 @@ public class CarbonFootprintServiceImpl implements CarbonFootprintService {
         Double mobileMachineryDieselConsumption = consumptionService.calculateConsumption(DIESEL, MOBILE_MACHINERY, data);
         Double mobileMachineryGasolineConsumption = consumptionService.calculateConsumption(GASOLINE, MOBILE_MACHINERY, data);
 
+        Double stationaryMachineryDieselCalculate = calculateCarbonFootprint(DIESEL, STATIONARY_MACHINERY, stationaryMachineryDieselConsumption);
+        Double stationaryMachineryGasolineCalculate = calculateCarbonFootprint(GASOLINE, STATIONARY_MACHINERY, stationaryMachineryGasolineConsumption);
+        Double mobileMachineryDieselCalculate = calculateCarbonFootprint(DIESEL, MOBILE_MACHINERY, mobileMachineryDieselConsumption);
+        Double mobileMachineryGasolineCalculate = calculateCarbonFootprint(GASOLINE, MOBILE_MACHINERY, mobileMachineryGasolineConsumption);
+
         return new CarbonFootprintDto(
                 stationaryMachineryDieselConsumption,
-                calculateCarbonFootprint(DIESEL, STATIONARY_MACHINERY, stationaryMachineryDieselConsumption),
+                formatNumber(stationaryMachineryDieselConsumption),
+                stationaryMachineryDieselCalculate,
+                formatNumber(stationaryMachineryDieselCalculate),
                 stationaryMachineryGasolineConsumption,
-                calculateCarbonFootprint(GASOLINE, STATIONARY_MACHINERY, stationaryMachineryGasolineConsumption),
+                formatNumber(stationaryMachineryGasolineConsumption),
+                stationaryMachineryGasolineCalculate,
+                formatNumber(stationaryMachineryGasolineCalculate),
                 mobileMachineryDieselConsumption,
-                calculateCarbonFootprint(DIESEL, MOBILE_MACHINERY, mobileMachineryDieselConsumption),
+                formatNumber(mobileMachineryDieselConsumption),
+                mobileMachineryDieselCalculate,
+                formatNumber(mobileMachineryDieselCalculate),
                 mobileMachineryGasolineConsumption,
-                calculateCarbonFootprint(GASOLINE, MOBILE_MACHINERY, mobileMachineryGasolineConsumption)
+                formatNumber(mobileMachineryGasolineConsumption),
+                mobileMachineryGasolineCalculate,
+                formatNumber(mobileMachineryGasolineCalculate)
         );
     }
 
