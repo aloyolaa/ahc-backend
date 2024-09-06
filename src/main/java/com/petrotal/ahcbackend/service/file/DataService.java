@@ -2,6 +2,7 @@ package com.petrotal.ahcbackend.service.file;
 
 import com.petrotal.ahcbackend.entity.Base;
 import com.petrotal.ahcbackend.entity.Data;
+import com.petrotal.ahcbackend.enumerator.FuelType;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,5 +21,5 @@ public interface DataService {
 
     <T extends Base> T getBase(Sheet sheet, int rowIndex, int base, Function<String, T> findByName);
 
-    String getDescription(String sheetName);
+    FuelType getDescription(String sheetName);
 }

@@ -6,11 +6,13 @@ import com.petrotal.ahcbackend.entity.Equipment;
 import java.util.List;
 
 public interface EquipmentService {
-    Equipment findById(Long id);
+    EquipmentDto findById(Long id);
 
     Equipment findByName(String name);
 
     List<EquipmentDto> findAll();
 
-    Equipment save(Equipment equipment);
+    Equipment save(EquipmentDto equipmentDto);
+
+    Boolean existsByName(String name);
 }

@@ -1,8 +1,9 @@
 package com.petrotal.ahcbackend.controller;
 
+import com.petrotal.ahcbackend.dto.AreaDto;
 import com.petrotal.ahcbackend.dto.ResponseDto;
-import com.petrotal.ahcbackend.entity.Area;
 import com.petrotal.ahcbackend.service.data.AreaService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,10 +36,10 @@ public class AreaController {
     }
 
     @PostMapping("/save")
-    public ResponseEntity<ResponseDto> save(@RequestBody Area area) {
+    public ResponseEntity<ResponseDto> save(@Valid @RequestBody AreaDto areaDto) {
         return new ResponseEntity<>(
                 new ResponseDto(
-                        areaService.save(area),
+                        areaService.save(areaDto),
                         true)
                 , HttpStatus.OK
         );

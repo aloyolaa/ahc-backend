@@ -23,10 +23,11 @@ public class ContractorServiceImpl implements ContractorService {
 
     @Override
     @Transactional(readOnly = true)
-    public Contractor findById(Long id) {
+    public ContractorDto findById(Long id) {
         try {
-            return contractorRepository.findById(id)
+            Contractor contractor = contractorRepository.findById(id)
                     .orElseThrow(() -> new EntityNotFoundException("Contratista con el ID " + id + " no existe."));
+            return contractorMapper.toContractorDto(contractor);
         } catch (DataAccessException | TransactionException e) {
             throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde.", e);
         }
@@ -55,8 +56,17 @@ public class ContractorServiceImpl implements ContractorService {
 
     @Override
     @Transactional
-    public Contractor save(Contractor contractor) {
-        contractor.setName(contractor.getName().toUpperCase());
-        return contractorRepository.save(contractor);
+    public Contractor save(ContractorDto contractorDto) {
+        return contractorRepository.save(contractorMapper.toContractor(contractorDto));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Boolean existsByName(String name) {
+        try {
+            return contractorRepository.existsByName(name);
+        } catch (DataAccessException | TransactionException e) {
+            throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde.", e);
+        }
     }
 }

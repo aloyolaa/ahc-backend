@@ -17,5 +17,6 @@ public interface DataMapper {
     @Mapping(target = "area.id", source = "area")
     @Mapping(target = "contractor.id", source = "contractor")
     @Mapping(target = "equipment.id", source = "equipment")
+    @Mapping(target = "description", expression = "java(com.petrotal.ahcbackend.enumerator.FuelType.valueOf(dataDto.description().toUpperCase()))")
     Data toData(DataDto dataDto);
 }

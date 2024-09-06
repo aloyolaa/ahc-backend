@@ -1,8 +1,9 @@
 package com.petrotal.ahcbackend.controller;
 
+import com.petrotal.ahcbackend.dto.EquipmentDto;
 import com.petrotal.ahcbackend.dto.ResponseDto;
-import com.petrotal.ahcbackend.entity.Equipment;
 import com.petrotal.ahcbackend.service.data.EquipmentService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,10 +36,10 @@ public class EquipmentController {
     }
 
     @PostMapping("/save")
-    public ResponseEntity<ResponseDto> save(@RequestBody Equipment equipment) {
+    public ResponseEntity<ResponseDto> save(@Valid @RequestBody EquipmentDto equipmentDto) {
         return new ResponseEntity<>(
                 new ResponseDto(
-                        equipmentService.save(equipment),
+                        equipmentService.save(equipmentDto),
                         true)
                 , HttpStatus.OK
         );

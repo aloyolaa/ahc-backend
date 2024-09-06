@@ -1,6 +1,7 @@
 package com.petrotal.ahcbackend.service.file.impl;
 
 import com.petrotal.ahcbackend.entity.*;
+import com.petrotal.ahcbackend.enumerator.FuelType;
 import com.petrotal.ahcbackend.exception.FileProcessingException;
 import com.petrotal.ahcbackend.exception.InvalidFileFormatException;
 import com.petrotal.ahcbackend.service.data.AreaService;
@@ -145,8 +146,8 @@ public class DataServiceImpl implements DataService {
     }
 
     @Override
-    public String getDescription(String sheetName) {
-        return sheetName.equals(DIESEL_SHEET) ? "DIESEL" : "GASOLINE";
+    public FuelType getDescription(String sheetName) {
+        return sheetName.equals(DIESEL_SHEET) ? FuelType.DIESEL : FuelType.GASOLINE;
     }
 
     @Override

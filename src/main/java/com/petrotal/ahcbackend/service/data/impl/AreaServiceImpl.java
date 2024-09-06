@@ -23,10 +23,11 @@ public class AreaServiceImpl implements AreaService {
 
     @Override
     @Transactional(readOnly = true)
-    public Area findById(Long id) {
+    public AreaDto findById(Long id) {
         try {
-            return areaRepository.findById(id)
+            Area area = areaRepository.findById(id)
                     .orElseThrow(() -> new EntityNotFoundException("Area con el ID " + id + " no existe."));
+            return areaMapper.toAreaDto(area);
         } catch (DataAccessException | TransactionException e) {
             throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde.", e);
         }
@@ -55,8 +56,17 @@ public class AreaServiceImpl implements AreaService {
 
     @Override
     @Transactional
-    public Area save(Area area) {
-        area.setName(area.getName().toUpperCase());
-        return areaRepository.save(area);
+    public Area save(AreaDto areaDto) {
+        return areaRepository.save(areaMapper.toArea(areaDto));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Boolean existsByName(String name) {
+        try {
+            return areaRepository.existsByName(name);
+        } catch (DataAccessException | TransactionException e) {
+            throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde.", e);
+        }
     }
 }

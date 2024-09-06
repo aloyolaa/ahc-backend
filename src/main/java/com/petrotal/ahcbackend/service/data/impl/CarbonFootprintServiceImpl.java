@@ -4,6 +4,8 @@ import com.petrotal.ahcbackend.dto.CarbonFootprintDto;
 import com.petrotal.ahcbackend.entity.Data;
 import com.petrotal.ahcbackend.entity.EmissionFactor;
 import com.petrotal.ahcbackend.entity.GlobalWarmingPotential;
+import com.petrotal.ahcbackend.enumerator.EquipmentType;
+import com.petrotal.ahcbackend.enumerator.FuelType;
 import com.petrotal.ahcbackend.service.data.CarbonFootprintService;
 import com.petrotal.ahcbackend.service.data.DataAccessService;
 import com.petrotal.ahcbackend.service.data.EmissionFactorService;
@@ -27,24 +29,19 @@ public class CarbonFootprintServiceImpl implements CarbonFootprintService {
     private final EmissionFactorService emissionFactorService;
     private final GlobalWarmingPotentialService globalWarmingPotentialService;
 
-    private static final String DIESEL = "DIESEL";
-    private static final String GASOLINE = "GASOLINE";
-    private static final String STATIONARY_MACHINERY = "STATIONARY-MACHINERY";
-    private static final String MOBILE_MACHINERY = "MOBILE-MACHINERY";
-
     @Override
     public CarbonFootprintDto getCarbonFootprint() {
         List<Data> data = dataAccessService.findByYear(Year.now().getValue());
 
-        Double stationaryMachineryDieselConsumption = consumptionService.calculateConsumption(DIESEL, STATIONARY_MACHINERY, data);
-        Double stationaryMachineryGasolineConsumption = consumptionService.calculateConsumption(GASOLINE, STATIONARY_MACHINERY, data);
-        Double mobileMachineryDieselConsumption = consumptionService.calculateConsumption(DIESEL, MOBILE_MACHINERY, data);
-        Double mobileMachineryGasolineConsumption = consumptionService.calculateConsumption(GASOLINE, MOBILE_MACHINERY, data);
+        Double stationaryMachineryDieselConsumption = consumptionService.calculateConsumption(FuelType.DIESEL, EquipmentType.STATIONARY, data);
+        Double stationaryMachineryGasolineConsumption = consumptionService.calculateConsumption(FuelType.GASOLINE, EquipmentType.STATIONARY, data);
+        Double mobileMachineryDieselConsumption = consumptionService.calculateConsumption(FuelType.DIESEL, EquipmentType.MOBILE, data);
+        Double mobileMachineryGasolineConsumption = consumptionService.calculateConsumption(FuelType.GASOLINE, EquipmentType.MOBILE, data);
 
-        Double stationaryMachineryDieselCalculate = calculateCarbonFootprint(DIESEL, STATIONARY_MACHINERY, stationaryMachineryDieselConsumption);
-        Double stationaryMachineryGasolineCalculate = calculateCarbonFootprint(GASOLINE, STATIONARY_MACHINERY, stationaryMachineryGasolineConsumption);
-        Double mobileMachineryDieselCalculate = calculateCarbonFootprint(DIESEL, MOBILE_MACHINERY, mobileMachineryDieselConsumption);
-        Double mobileMachineryGasolineCalculate = calculateCarbonFootprint(GASOLINE, MOBILE_MACHINERY, mobileMachineryGasolineConsumption);
+        Double stationaryMachineryDieselCalculate = calculateCarbonFootprint(FuelType.DIESEL, EquipmentType.STATIONARY, stationaryMachineryDieselConsumption);
+        Double stationaryMachineryGasolineCalculate = calculateCarbonFootprint(FuelType.GASOLINE, EquipmentType.STATIONARY, stationaryMachineryGasolineConsumption);
+        Double mobileMachineryDieselCalculate = calculateCarbonFootprint(FuelType.DIESEL, EquipmentType.MOBILE, mobileMachineryDieselConsumption);
+        Double mobileMachineryGasolineCalculate = calculateCarbonFootprint(FuelType.GASOLINE, EquipmentType.MOBILE, mobileMachineryGasolineConsumption);
 
         return new CarbonFootprintDto(
                 stationaryMachineryDieselConsumption,
@@ -67,10 +64,10 @@ public class CarbonFootprintServiceImpl implements CarbonFootprintService {
     }
 
     @Override
-    public Double calculateCarbonFootprint(String fuelType, String consumptionType, Double consumption) {
+    public Double calculateCarbonFootprint(FuelType fuelType, EquipmentType equipmentType, Double consumption) {
         Integer year = Year.now().getValue();
 
-        Optional<EmissionFactor> emissionFactorByYearOptional = emissionFactorService.findByYearOptional(year, fuelType, consumptionType);
+        Optional<EmissionFactor> emissionFactorByYearOptional = emissionFactorService.findByYearOptional(year, fuelType.name(), equipmentType.name());
         Optional<GlobalWarmingPotential> globalWarmingPotentialByYearOptional = globalWarmingPotentialService.findByYearOptional(year);
 
         if (emissionFactorByYearOptional.isPresent() && globalWarmingPotentialByYearOptional.isPresent()) {
