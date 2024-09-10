@@ -14,10 +14,11 @@ import java.util.List;
 public class ConsumptionServiceImpl implements ConsumptionService {
     @Override
     public Double calculateConsumption(FuelType fuelType, EquipmentType equipmentType, List<Data> data) {
-        return data
+        /*return data
                 .stream()
-                .filter(d -> d.getEquipment().getType() != null && d.getEquipment().getType().equals(equipmentType) && d.getDescription().equals(fuelType))
+                .filter(d -> d.getEquipment().getType() != null && d.getEquipment().getType().equals(equipmentType) && d.getDataDetails().getDescription().equals(fuelType))
                 .mapToDouble(Data::getConsumption)
-                .sum();
+                .sum();*/
+        return 0.0;
     }
 }

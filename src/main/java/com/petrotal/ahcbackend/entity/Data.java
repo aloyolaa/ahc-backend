@@ -7,6 +7,8 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.time.LocalDate;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -25,15 +27,18 @@ public class Data {
     @Column(name = "dispatch_date", nullable = false)
     private LocalDate dispatchDate;
 
-    @Enumerated(EnumType.STRING)
+    /*@Enumerated(EnumType.STRING)
     @Column(columnDefinition = "description", nullable = false)
-    private FuelType description;
+    private FuelType description;*/
 
-    @Column(name = "consumption", nullable = false)
-    private Double consumption;
+    /*@Column(name = "consumption", nullable = false)
+    private Double consumption;*/
 
-    @Column(name = "unit_of_measurement", nullable = false)
-    private String unitOfMeasurement;
+    /*@Column(name = "unit_of_measurement", nullable = false)
+    private String unitOfMeasurement;*/
+
+    @Column(name = "material_status")
+    private String materialStatus;
 
     @ManyToOne
     @JoinColumn(name = "area_id")
@@ -47,8 +52,6 @@ public class Data {
     @JoinColumn(name = "equipment_id", nullable = false)
     private Equipment equipment;
 
-    @PrePersist
-    public void prePersist() {
-        this.unitOfMeasurement = "GALONES";
-    }
+    @OneToMany(mappedBy = "data", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<DataDetail> dataDetails = new LinkedHashSet<>();
 }
