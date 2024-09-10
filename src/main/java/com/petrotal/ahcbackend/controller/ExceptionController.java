@@ -2,7 +2,9 @@ package com.petrotal.ahcbackend.controller;
 
 import com.petrotal.ahcbackend.dto.ErrorResponse;
 import com.petrotal.ahcbackend.dto.ResponseDto;
+import com.petrotal.ahcbackend.exception.ConvertPdfException;
 import com.petrotal.ahcbackend.exception.DataAccessExceptionImpl;
+import com.petrotal.ahcbackend.exception.FileStorageException;
 import com.petrotal.ahcbackend.exception.InvalidVariableException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
@@ -66,6 +68,30 @@ public class ExceptionController {
         String errorMessage = "EntityNotFoundException: " + e.getMessage();
         log.error(errorMessage);
         ErrorResponse errorResponse = new ErrorResponse("Error en Búsqueda de Datos", e.getMessage());
+        return new ResponseEntity<>(
+                new ResponseDto(
+                        errorResponse,
+                        false)
+                , HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(ConvertPdfException.class)
+    public ResponseEntity<ResponseDto> convertPdfException(ConvertPdfException e) {
+        String errorMessage = "ConvertPdfException: " + e.getMessage();
+        log.error(errorMessage);
+        ErrorResponse errorResponse = new ErrorResponse("Error al Convertir Archivo", e.getMessage());
+        return new ResponseEntity<>(
+                new ResponseDto(
+                        errorResponse,
+                        false)
+                , HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(FileStorageException.class)
+    public ResponseEntity<ResponseDto> fileStorageException(FileStorageException e) {
+        String errorMessage = "FileStorageException: " + e.getMessage();
+        log.error(errorMessage);
+        ErrorResponse errorResponse = new ErrorResponse("Error al Manejar Archivo", e.getMessage());
         return new ResponseEntity<>(
                 new ResponseDto(
                         errorResponse,

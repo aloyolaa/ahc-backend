@@ -23,10 +23,11 @@ public class EquipmentServiceImpl implements EquipmentService {
 
     @Override
     @Transactional(readOnly = true)
-    public Equipment findById(Long id) {
+    public EquipmentDto findById(Long id) {
         try {
-            return equipmentRepository.findById(id)
+            Equipment equipment = equipmentRepository.findById(id)
                     .orElseThrow(() -> new EntityNotFoundException("Equipamiento con el ID " + id + " no existe."));
+            return equipmentMapper.toEquipmentDto(equipment);
         } catch (DataAccessException | TransactionException e) {
             throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde.", e);
         }
@@ -37,8 +38,7 @@ public class EquipmentServiceImpl implements EquipmentService {
     public Equipment findByName(String name) {
         try {
             return equipmentRepository.findByName(name)
-                    .orElseThrow(() -> new EntityNotFoundException("Equipamiento con el nombre " + name + " no existe.")
-                    );
+                    .orElseThrow(() -> new EntityNotFoundException("Equipamiento con el nombre " + name + " no existe."));
         } catch (DataAccessException | TransactionException e) {
             throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde.", e);
         }
@@ -49,6 +49,22 @@ public class EquipmentServiceImpl implements EquipmentService {
     public List<EquipmentDto> findAll() {
         try {
             return equipmentMapper.toEquipmentDtos(equipmentRepository.findAll());
+        } catch (DataAccessException | TransactionException e) {
+            throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde.", e);
+        }
+    }
+
+    @Override
+    @Transactional
+    public Equipment save(EquipmentDto equipmentDto) {
+        return equipmentRepository.save(equipmentMapper.toEquipment(equipmentDto));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Boolean existsByName(String name) {
+        try {
+            return equipmentRepository.existsByName(name);
         } catch (DataAccessException | TransactionException e) {
             throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde.", e);
         }

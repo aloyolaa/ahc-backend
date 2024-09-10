@@ -1,5 +1,6 @@
 package com.petrotal.ahcbackend.entity;
 
+import com.petrotal.ahcbackend.enumerator.FuelType;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -24,8 +25,9 @@ public class Data {
     @Column(name = "dispatch_date", nullable = false)
     private LocalDate dispatchDate;
 
-    @Column(name = "description", nullable = false)
-    private String description;
+    @Enumerated(EnumType.STRING)
+    @Column(columnDefinition = "description", nullable = false)
+    private FuelType description;
 
     @Column(name = "consumption", nullable = false)
     private Double consumption;

@@ -1,9 +1,7 @@
 package com.petrotal.ahcbackend.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
+import com.petrotal.ahcbackend.enumerator.EquipmentType;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -16,10 +14,11 @@ import lombok.Setter;
         @UniqueConstraint(name = "uc_equipment_name", columnNames = {"name"})
 })
 public class Equipment extends Base {
-    @Column(name = "type")
-    private String type;
+    @Enumerated(EnumType.STRING)
+    @Column(columnDefinition = "type", nullable = false)
+    private EquipmentType type;
 
-    public Equipment(Long id, String name, String type) {
+    public Equipment(Long id, String name, EquipmentType type) {
         super(id, name);
         this.type = type;
     }

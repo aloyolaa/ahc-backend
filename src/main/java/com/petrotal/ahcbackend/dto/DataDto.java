@@ -9,22 +9,22 @@ import jakarta.validation.constraints.Positive;
 import java.time.LocalDate;
 
 public record DataDto(
-        @NotBlank(message = "{NotBlank.gas.voucherNumber}")
+        @NotBlank(message = "{NotBlank.data.voucherNumber}")
         @ExistsByVoucherNumber
         String voucherNumber,
-        @NotNull(message = "{NotNull.gas.dispatchDate}")
-        @PastOrPresent(message = "{PastOrPresent.gas.dispatchDate}")
+        @NotNull(message = "{NotNull.data.dispatchDate}")
+        @PastOrPresent(message = "{PastOrPresent.data.dispatchDate}")
         LocalDate dispatchDate,
-        @NotBlank(message = "{NotBlank.gas.description}")
+        @NotBlank(message = "{NotBlank.data.description}")
         String description,
-        @NotNull(message = "{NotNull.gas.consumption}")
-        @Positive(message = "{Positive.gas.consumption}")
+        @NotNull(message = "{NotNull.data.consumption}")
+        @Positive(message = "{Positive.data.consumption}")
         Double consumption,
-        @NotNull(message = "{NotNull.gas.area}")
+        @NotNull(message = "{NotNull.data.area}")
         Long area,
-        @NotNull(message = "{NotNull.gas.contractor}")
+        @NotNull(message = "{NotNull.data.contractor}")
         Long contractor,
-        @NotNull(message = "{NotNull.gas.equipment}")
+        @NotNull(message = "{NotNull.data.equipment}")
         Long equipment
 ) {
 }

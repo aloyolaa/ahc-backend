@@ -1,13 +1,13 @@
 package com.petrotal.ahcbackend.controller;
 
+import com.petrotal.ahcbackend.dto.AreaDto;
 import com.petrotal.ahcbackend.dto.ResponseDto;
 import com.petrotal.ahcbackend.service.data.AreaService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/area")
@@ -25,4 +25,23 @@ public class AreaController {
         );
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<ResponseDto> getById(@PathVariable Long id) {
+        return new ResponseEntity<>(
+                new ResponseDto(
+                        areaService.findById(id),
+                        true)
+                , HttpStatus.OK
+        );
+    }
+
+    @PostMapping("/save")
+    public ResponseEntity<ResponseDto> save(@Valid @RequestBody AreaDto areaDto) {
+        return new ResponseEntity<>(
+                new ResponseDto(
+                        areaService.save(areaDto),
+                        true)
+                , HttpStatus.OK
+        );
+    }
 }
