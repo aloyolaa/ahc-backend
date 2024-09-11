@@ -15,6 +15,7 @@ public record DataDto(
         LocalDate dispatchDate,
         @NotBlank(message = "{NotBlank.data.materialStatus}")
         String materialStatus,
+        String observations,
         @NotNull(message = "{NotNull.data.area}")
         Long area,
         @NotNull(message = "{NotNull.data.contractor}")

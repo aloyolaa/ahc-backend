@@ -25,7 +25,7 @@ public class DataDetail {
     private Integer condition;
 
     @Column(name = "ordered_quantity", nullable = false)
-    private Integer orderedQuantity;
+    private Double orderedQuantity;
 
     @Enumerated(EnumType.STRING)
     @Column(columnDefinition = "description", nullable = false)
@@ -38,13 +38,13 @@ public class DataDetail {
     private String unitOfMeasurement;
 
     @Column(name = "quantity_shipped", nullable = false)
-    private Integer quantityShipped;
+    private Double quantityShipped;
 
     @Column(name = "unit_price")
     private Double unitPrice;
 
     @Column(name = "final_stock")
-    private Integer finalStock;
+    private Double finalStock;
 
     @ManyToOne
     @ToString.Exclude

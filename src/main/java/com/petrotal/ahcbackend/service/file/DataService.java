@@ -19,6 +19,8 @@ public interface DataService {
 
     Double getConsumption(Sheet sheet, int rowIndex);
 
+    Double getStock(Sheet sheet, int rowIndex);
+
     <T extends Base> T getBase(Sheet sheet, int rowIndex, int base, Function<String, T> findByName);
 
     FuelType getDescription(String sheetName);
