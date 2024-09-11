@@ -4,6 +4,9 @@ import com.petrotal.ahcbackend.enumerator.FuelType;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 @Getter
 @Setter
@@ -44,11 +47,7 @@ public class DataDetail {
     private Integer finalStock;
 
     @ManyToOne
+    @ToString.Exclude
     @JoinColumn(name = "data_id")
     private Data data;
-
-    @PrePersist
-    public void prePersist() {
-        this.unitOfMeasurement = "GALONES";
-    }
 }

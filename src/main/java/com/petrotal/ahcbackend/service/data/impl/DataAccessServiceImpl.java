@@ -44,6 +44,7 @@ public class DataAccessServiceImpl implements DataAccessService {
             /*data.setArea(areaService.findById(data.getArea().getId()));
             data.setContractor(contractorService.findById(data.getContractor().getId()));
             data.setEquipment(equipmentService.findById(data.getEquipment().getId()));*/
+            data.getDataDetails().forEach(dt -> dt.setData(data));
             dataRepository.save(data);
         } catch (DataAccessException | TransactionException e) {
             throw new DataAccessExceptionImpl("Error al guardar los datos. Inténtelo mas tarde.", e);

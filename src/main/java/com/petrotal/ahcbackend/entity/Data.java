@@ -7,7 +7,9 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -21,21 +23,11 @@ public class Data {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(name = "voucher_number")
+    @Column(name = "voucher_number", nullable = false)
     private String voucherNumber;
 
     @Column(name = "dispatch_date", nullable = false)
     private LocalDate dispatchDate;
-
-    /*@Enumerated(EnumType.STRING)
-    @Column(columnDefinition = "description", nullable = false)
-    private FuelType description;*/
-
-    /*@Column(name = "consumption", nullable = false)
-    private Double consumption;*/
-
-    /*@Column(name = "unit_of_measurement", nullable = false)
-    private String unitOfMeasurement;*/
 
     @Column(name = "material_status")
     private String materialStatus;
@@ -53,5 +45,5 @@ public class Data {
     private Equipment equipment;
 
     @OneToMany(mappedBy = "data", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<DataDetail> dataDetails = new LinkedHashSet<>();
+    private List<DataDetail> dataDetails = new ArrayList<>();
 }
