@@ -48,7 +48,10 @@ public class EquipmentServiceImpl implements EquipmentService {
     @Transactional(readOnly = true)
     public List<EquipmentDto> findAll() {
         try {
-            return equipmentMapper.toEquipmentDtos(equipmentRepository.findAll());
+            List<Object[]> all = equipmentRepository.getAll();
+            return all.stream()
+                    .map(result -> new EquipmentDto((Long) result[0], (String) result[1], (String) result[2]))
+                    .toList();
         } catch (DataAccessException | TransactionException e) {
             throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde.", e);
         }
