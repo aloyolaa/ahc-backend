@@ -11,7 +11,7 @@ public record DataDetailDto(
         Integer condition,
         @NotNull(message = "{NotNull.dataDetails.orderedQuantity}")
         @Positive(message = "{Positive.dataDetails.orderedQuantity}")
-        Integer orderedQuantity,
+        Double orderedQuantity,
         @NotBlank(message = "{NotBlank.dataDetails.description}")
         String description,
         @NotBlank(message = "{NotBlank.dataDetails.location}")
@@ -20,12 +20,12 @@ public record DataDetailDto(
         String unitOfMeasurement,
         @NotNull(message = "{NotNull.dataDetails.quantityShipped}")
         @Positive(message = "{Positive.dataDetails.quantityShipped}")
-        Integer quantityShipped,
+        Double quantityShipped,
         @NotNull(message = "{NotNull.dataDetails.unitPrice}")
         @Positive(message = "{Positive.dataDetails.unitPrice}")
         Double unitPrice,
         @NotNull(message = "{NotNull.dataDetails.finalStock}")
         @Positive(message = "{Positive.dataDetails.finalStock}")
-        Integer finalStock
+        Double finalStock
 ) {
 }

@@ -44,7 +44,6 @@ public class DataServiceImpl implements DataService {
         for (int i = getInitialRow(sheetName); i <= getTotalRows(sheet) + 1; i++) {
             log.info("Fila: {}", i + 1);
             Data d = new Data();
-
             LocalDate dispatchDate = getDispatchDate(sheet, i);
 
             if (dispatchDate.getYear() > 2020) {
@@ -56,11 +55,20 @@ public class DataServiceImpl implements DataService {
                     if (equipment != null) {
                         d.setVoucherNumber(getVoucherNumber(sheet, i));
                         d.setDispatchDate(dispatchDate);
-                        //d.setDescription(getDescription(sheetName));
-                        //d.setConsumption(consumption);
                         d.setArea(getBase(sheet, i, 1, areaService::findByName));
                         d.setContractor(getBase(sheet, i, 2, contractorService::findByName));
                         d.setEquipment(equipment);
+
+                        DataDetail dataDetail = new DataDetail();
+                        dataDetail.setOrderedQuantity(consumption);
+                        dataDetail.setDescription(getDescription(sheetName));
+                        dataDetail.setQuantityShipped(consumption);
+                        dataDetail.setUnitOfMeasurement("GALONES");
+                        dataDetail.setFinalStock(getStock(sheet, i));
+                        dataDetail.setData(d);
+
+                        d.getDataDetails().add(dataDetail);
+
                         data.add(d);
                         log.info("Data: {}", d);
                     }
@@ -130,6 +138,24 @@ public class DataServiceImpl implements DataService {
     @Override
     public Double getConsumption(Sheet sheet, int rowIndex) {
         int column = sheet.getSheetName().equals(DIESEL_SHEET) ? 17 : 10;
+        Cell cell = getCell(sheet, rowIndex, column);
+
+        if (cell != null && cell.getCellType() != CellType.BLANK) {
+            String cellValue = cell.toString().trim();
+
+            try {
+                return Double.parseDouble(cellValue);
+            } catch (NumberFormatException e) {
+                return null;
+            }
+        }
+
+        return null;
+    }
+
+    @Override
+    public Double getStock(Sheet sheet, int rowIndex) {
+        int column = sheet.getSheetName().equals(DIESEL_SHEET) ? 18 : 11;
         Cell cell = getCell(sheet, rowIndex, column);
 
         if (cell != null && cell.getCellType() != CellType.BLANK) {

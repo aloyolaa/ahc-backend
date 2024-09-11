@@ -15,7 +15,6 @@ import java.util.Set;
 @Getter
 @Setter
 @Entity
-@ToString
 @Table(name = "data")
 public class Data {
     @Id
@@ -31,6 +30,9 @@ public class Data {
 
     @Column(name = "material_status")
     private String materialStatus;
+
+    @Column(name = "observations")
+    private String observations;
 
     @ManyToOne
     @JoinColumn(name = "area_id")
