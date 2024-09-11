@@ -15,7 +15,7 @@ import lombok.Setter;
 })
 public class Equipment extends Base {
     @Enumerated(EnumType.STRING)
-    @Column(columnDefinition = "type", nullable = false)
+    @Column(columnDefinition = "type")
     private EquipmentType type;
 
     public Equipment(Long id, String name, EquipmentType type) {

@@ -56,8 +56,8 @@ public class DataServiceImpl implements DataService {
                     if (equipment != null) {
                         d.setVoucherNumber(getVoucherNumber(sheet, i));
                         d.setDispatchDate(dispatchDate);
-                        d.setDescription(getDescription(sheetName));
-                        d.setConsumption(consumption);
+                        //d.setDescription(getDescription(sheetName));
+                        //d.setConsumption(consumption);
                         d.setArea(getBase(sheet, i, 1, areaService::findByName));
                         d.setContractor(getBase(sheet, i, 2, contractorService::findByName));
                         d.setEquipment(equipment);

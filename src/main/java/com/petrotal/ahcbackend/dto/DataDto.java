@@ -1,12 +1,10 @@
 package com.petrotal.ahcbackend.dto;
 
 import com.petrotal.ahcbackend.validator.annotation.ExistsByVoucherNumber;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.PastOrPresent;
-import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public record DataDto(
         @NotBlank(message = "{NotBlank.data.voucherNumber}")
@@ -15,16 +13,16 @@ public record DataDto(
         @NotNull(message = "{NotNull.data.dispatchDate}")
         @PastOrPresent(message = "{PastOrPresent.data.dispatchDate}")
         LocalDate dispatchDate,
-        @NotBlank(message = "{NotBlank.data.description}")
-        String description,
-        @NotNull(message = "{NotNull.data.consumption}")
-        @Positive(message = "{Positive.data.consumption}")
-        Double consumption,
+        @NotBlank(message = "{NotBlank.data.materialStatus}")
+        String materialStatus,
         @NotNull(message = "{NotNull.data.area}")
         Long area,
         @NotNull(message = "{NotNull.data.contractor}")
         Long contractor,
         @NotNull(message = "{NotNull.data.equipment}")
-        Long equipment
+        Long equipment,
+        @NotNull(message = "{NotNull.data.details}")
+        @Size(min = 1, message = "{Size.data.details}")
+        List<DataDetailDto> details
 ) {
 }
