@@ -8,7 +8,7 @@ import java.util.List;
 public interface ContractorService {
     ContractorDto findById(Long id);
 
-    Contractor findByName(String name);
+    Contractor findByName(String name, List<ContractorDto> contractorDtos);
 
     List<ContractorDto> findAll();
 

@@ -8,7 +8,7 @@ import java.util.List;
 public interface EquipmentService {
     EquipmentDto findById(Long id);
 
-    Equipment findByName(String name);
+    Equipment findByName(String name, List<EquipmentDto> equipmentDtos);
 
     List<EquipmentDto> findAll();
 
