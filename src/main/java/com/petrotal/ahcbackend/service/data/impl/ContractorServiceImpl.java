@@ -34,14 +34,13 @@ public class ContractorServiceImpl implements ContractorService {
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public Contractor findByName(String name) {
-        try {
-            return contractorRepository.findByName(name)
-                    .orElseThrow(() -> new EntityNotFoundException("Contratista con el nombre " + name + " no existe."));
-        } catch (DataAccessException | TransactionException e) {
-            throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde.", e);
-        }
+    public Contractor findByName(String name, List<ContractorDto> contractorDtos) {
+        ContractorDto contractorDto = contractorDtos.stream()
+                .filter(c -> c.name().equals(name))
+                .findFirst()
+                .orElseThrow(() -> new EntityNotFoundException("Contratista con el nombre " + name + " no existe."));
+
+        return contractorMapper.toContractor(contractorDto);
     }
 
     @Override

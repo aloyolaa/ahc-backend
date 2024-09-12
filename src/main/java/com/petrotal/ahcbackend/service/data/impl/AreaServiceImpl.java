@@ -34,14 +34,13 @@ public class AreaServiceImpl implements AreaService {
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public Area findByName(String name) {
-        try {
-            return areaRepository.findByName(name)
-                    .orElseThrow(() -> new EntityNotFoundException("Area con el nombre " + name + " no existe."));
-        } catch (DataAccessException | TransactionException e) {
-            throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde.", e);
-        }
+    public Area findByName(String name, List<AreaDto> areaDtos) {
+        AreaDto areaDto = areaDtos.stream()
+                .filter(a -> a.name().equals(name))
+                .findFirst()
+                .orElseThrow(() -> new EntityNotFoundException("Area con el nombre " + name + " no existe."));
+
+        return areaMapper.toArea(areaDto);
     }
 
     @Override

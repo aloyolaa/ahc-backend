@@ -8,7 +8,7 @@ import java.util.List;
 public interface AreaService {
     AreaDto findById(Long id);
 
-    Area findByName(String name);
+    Area findByName(String name, List<AreaDto> areaDtos);
 
     List<AreaDto> findAll();
 

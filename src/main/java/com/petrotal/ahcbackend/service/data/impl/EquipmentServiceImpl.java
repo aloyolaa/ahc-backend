@@ -34,14 +34,13 @@ public class EquipmentServiceImpl implements EquipmentService {
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public Equipment findByName(String name) {
-        try {
-            return equipmentRepository.findByName(name)
-                    .orElseThrow(() -> new EntityNotFoundException("Equipamiento con el nombre " + name + " no existe."));
-        } catch (DataAccessException | TransactionException e) {
-            throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde.", e);
-        }
+    public Equipment findByName(String name, List<EquipmentDto> equipmentDtos) {
+        EquipmentDto equipmentDto = equipmentDtos.stream()
+                .filter(e -> e.name().equals(name))
+                .findFirst()
+                .orElseThrow(() -> new EntityNotFoundException("Equipamiento con el nombre " + name + " no existe."));
+
+        return equipmentMapper.toEquipment(equipmentDto);
     }
 
     @Override

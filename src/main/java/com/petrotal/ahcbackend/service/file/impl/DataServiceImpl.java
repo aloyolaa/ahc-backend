@@ -1,5 +1,8 @@
 package com.petrotal.ahcbackend.service.file.impl;
 
+import com.petrotal.ahcbackend.dto.AreaDto;
+import com.petrotal.ahcbackend.dto.ContractorDto;
+import com.petrotal.ahcbackend.dto.EquipmentDto;
 import com.petrotal.ahcbackend.entity.*;
 import com.petrotal.ahcbackend.enumerator.FuelType;
 import com.petrotal.ahcbackend.exception.FileProcessingException;
@@ -21,7 +24,6 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
 
 @Slf4j
 @Service
@@ -32,7 +34,7 @@ public class DataServiceImpl implements DataService {
     private final EquipmentService equipmentService;
     private static final String DIESEL_SHEET = "Diesel Operaciones";
 
-    public List<Data> manageData(MultipartFile file, String sheetName) {
+    public List<Data> manageData(MultipartFile file, String sheetName, List<AreaDto> areaDtos, List<ContractorDto> contractorDtos, List<EquipmentDto> equipmentDtos) {
         Workbook workbook = openWorkbook(file);
         Sheet sheet = validateSheet(workbook, sheetName);
 
@@ -50,13 +52,13 @@ public class DataServiceImpl implements DataService {
                 Double consumption = getConsumption(sheet, i);
 
                 if (consumption != null && consumption > 0) {
-                    Equipment equipment = getBase(sheet, i, 3, equipmentService::findByName);
+                    Equipment equipment = getObject(sheet, i, 3, equipmentDtos);
 
                     if (equipment != null) {
                         d.setVoucherNumber(getVoucherNumber(sheet, i));
                         d.setDispatchDate(dispatchDate);
-                        d.setArea(getBase(sheet, i, 1, areaService::findByName));
-                        d.setContractor(getBase(sheet, i, 2, contractorService::findByName));
+                        d.setArea(getObject(sheet, i, 1, areaDtos));
+                        d.setContractor(getObject(sheet, i,2, contractorDtos));
                         d.setEquipment(equipment);
 
                         DataDetail dataDetail = new DataDetail();
@@ -113,7 +115,6 @@ public class DataServiceImpl implements DataService {
             String cellStringValue = formatter.formatCellValue(cell);
 
             if (cell.getCellType() == CellType.FORMULA) {
-                log.info("Es formula");
                 log.info(cellStringValue);
                 String cellReference = cellStringValue.substring(1);
                 int row = Integer.parseInt(cellReference.replaceAll("\\D", "")); //[^0-9]
@@ -172,12 +173,7 @@ public class DataServiceImpl implements DataService {
     }
 
     @Override
-    public FuelType getDescription(String sheetName) {
-        return sheetName.equals(DIESEL_SHEET) ? FuelType.DIESEL : FuelType.GASOLINE;
-    }
-
-    @Override
-    public <T extends Base> T getBase(Sheet sheet, int rowIndex, int base, Function<String, T> findByName) {
+    public <T extends Base, E> T getObject(Sheet sheet, int rowIndex, int base, List<E> entityDtos) {
         int column;
 
         switch (base) {
@@ -193,10 +189,32 @@ public class DataServiceImpl implements DataService {
 
         if (cell != null && cell.getCellType() != CellType.BLANK) {
             name = formatter.formatCellValue(cell).trim().toUpperCase();
-            return !name.contains("COMUNIDAD") ? findByName.apply(name) : null;
+
+            if (!name.contains("COMUNIDAD")) {
+
+                switch (base) {
+                    case 1 -> {
+                        return (T) areaService.findByName(name, (List<AreaDto>) entityDtos);
+                    }
+                    case 2 -> {
+                        return (T) contractorService.findByName(name, (List<ContractorDto>) entityDtos);
+                    }
+                    case 3 -> {
+                        return (T) equipmentService.findByName(name, (List<EquipmentDto>) entityDtos);
+                    }
+                    default -> {
+                        return null;
+                    }
+                }
+            }
         }
 
         return null;
+    }
+
+    @Override
+    public FuelType getDescription(String sheetName) {
+        return sheetName.equals(DIESEL_SHEET) ? FuelType.DIESEL : FuelType.GASOLINE;
     }
 
     private Workbook openWorkbook(MultipartFile file) {
