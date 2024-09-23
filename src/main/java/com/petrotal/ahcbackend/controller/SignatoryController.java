@@ -1,6 +1,7 @@
 package com.petrotal.ahcbackend.controller;
 
 import com.petrotal.ahcbackend.dto.ResponseDto;
+import com.petrotal.ahcbackend.service.data.DataSignatoryService;
 import com.petrotal.ahcbackend.service.data.SignatoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -13,12 +14,13 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 public class SignatoryController {
     private final SignatoryService signatoryService;
+    private final DataSignatoryService dataSignatoryService;
 
     @PostMapping("/save/{userId}")
-    public ResponseEntity<ResponseDto> save(@PathVariable Long userId, @RequestParam MultipartFile sealFile, @RequestParam MultipartFile signatureFile) {
+    public ResponseEntity<ResponseDto> save(@PathVariable Long userId, @RequestParam MultipartFile signatureFile) {
         return new ResponseEntity<>(
                 new ResponseDto(
-                        signatoryService.save(userId, sealFile, signatureFile),
+                        signatoryService.save(userId, signatureFile),
                         true)
                 , HttpStatus.OK);
     }
@@ -32,20 +34,21 @@ public class SignatoryController {
                 , HttpStatus.OK);
     }
 
-    @PutMapping("/update/seal/{id}")
-    public ResponseEntity<ResponseDto> updateSeal(@PathVariable Long id, @RequestParam MultipartFile sealFile) {
-        return new ResponseEntity<>(
-                new ResponseDto(
-                        signatoryService.updateSeal(id, sealFile),
-                        true)
-                , HttpStatus.OK);
-    }
-
     @PutMapping("/update/signature/{id}")
     public ResponseEntity<ResponseDto> updateSignature(@PathVariable Long id, @RequestParam MultipartFile signatureFile) {
         return new ResponseEntity<>(
                 new ResponseDto(
                         signatoryService.updateSignature(id, signatureFile),
+                        true)
+                , HttpStatus.OK);
+    }
+
+    @PutMapping("/sign/{voucherId}/{userId}")
+    public ResponseEntity<ResponseDto> sign(@PathVariable Long voucherId, @PathVariable Long userId) {
+        dataSignatoryService.sign(voucherId, userId);
+        return new ResponseEntity<>(
+                new ResponseDto(
+                        "Voucher firmado correctamente",
                         true)
                 , HttpStatus.OK);
     }

@@ -8,6 +8,8 @@ import java.util.List;
 public interface DataAccessService {
     List<Data> findByYear(Integer year);
 
+    Data findById(Long id);
+
     void save(DataDto dataDto);
 
     void saveAll(List<Data> data);

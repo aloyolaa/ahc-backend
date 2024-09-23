@@ -48,4 +48,7 @@ public class Data {
 
     @OneToMany(mappedBy = "data", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DataDetail> dataDetails = new ArrayList<>();
+
+    @OneToMany(mappedBy = "data", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<DataSignatory> dataSignatories = new ArrayList<>();
 }

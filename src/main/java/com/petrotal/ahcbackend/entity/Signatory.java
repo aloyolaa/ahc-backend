@@ -14,8 +14,7 @@ public class Signatory {
     @Column(name = "id", nullable = false)
     private Long id;
     //private String position; // Cargo
-    private String seal; // URL or path to the seal image
-    private String signature; // URL or path to the signature image
+    private String signature;
 
     @OneToOne(optional = false, orphanRemoval = true)
     @JoinColumn(name = "user_id", nullable = false)
