@@ -7,16 +7,14 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "signatory")
-public class Signatory {
+@Table(name = "role")
+public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
-    //private String position; // Cargo
-    private String signature;
 
-    @OneToOne(optional = false, orphanRemoval = true)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    @Column(name = "name", nullable = false, unique = true)
+    private String name;
+
 }

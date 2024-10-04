@@ -27,12 +27,10 @@ public class SignatoryServiceImpl implements SignatoryService {
 
     @Override
     @Transactional
-    public Signatory save(Long userId, MultipartFile sealFile, MultipartFile signatureFile) {
+    public Signatory save(Long userId, MultipartFile signatureFile) {
         User user = userService.findById(userId);
         Signatory signatory = new Signatory();
-        String sealPath = fileStorageService.storeFile(sealFile);
         String signaturePath = fileStorageService.storeFile(signatureFile);
-        signatory.setSeal(sealPath);
         signatory.setSignature(signaturePath);
         signatory.setUser(user);
         return signatoryRepository.save(signatory);
@@ -47,24 +45,12 @@ public class SignatoryServiceImpl implements SignatoryService {
             Signatory signatory = signatoryRepository.findByUserId(user.getId())
                     .orElseThrow(() -> new EntityNotFoundException("El usuario con el ID " + userId + " no tiene un sello o firma asignado."));
 
-            String sealFile = Base64.getEncoder().encodeToString(fileStorageService.loadFileAsResource(signatory.getSeal()));
             String signatoryFile = Base64.getEncoder().encodeToString(fileStorageService.loadFileAsResource(signatory.getSignature()));
 
-            return new SignatoryDto(signatory.getId(), sealFile, signatoryFile);
+            return new SignatoryDto(signatory.getId(), signatoryFile);
         } catch (DataAccessException | TransactionException e) {
             throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde.", e);
         }
-    }
-
-    @Override
-    @Transactional
-    public Signatory updateSeal(Long id, MultipartFile sealFile) {
-        Signatory signatory = signatoryRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Signatario con el ID " + id + " no existe."));
-        String previousSeal = signatory.getSeal();
-        String sealPath = fileStorageService.storeFile(sealFile);
-        signatory.setSeal(sealPath);
-        fileStorageService.deleteFile(previousSeal);
-        return signatoryRepository.save(signatory);
     }
 
     @Override

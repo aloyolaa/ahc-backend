@@ -13,4 +13,7 @@ public interface DataRepository extends JpaRepository<Data, Long> {
     @EntityGraph(attributePaths = {"area", "contractor", "equipment", "dataDetails"})
     @Query("select d from Data d where extract(year from d.dispatchDate) = ?1")
     List<Data> findByYear(Integer year);
+
+    @Query("select d.voucherNumber from Data d where d.voucherNumber is not null order by d.voucherNumber DESC limit 1")
+    Integer findByVoucherNumberNotNullOrderByVoucherNumberDesc();
 }

@@ -9,4 +9,7 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, Long> {
     @Query("select u from User u where upper(u.username) = upper(?1)")
     Optional<User> findByUsernameIgnoreCase(String username);
+
+    @Query("select u from User u where u.role.name = ?1 and u.enabled = true order by u.hierarchy asc limit 1")
+    Optional<User> findByRoleAndEnabledTrueOrderByHierarchyAsc(String name);
 }
