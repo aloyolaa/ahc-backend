@@ -25,4 +25,14 @@ public class DataController {
                 , HttpStatus.OK
         );
     }
+
+    @GetMapping("/next-voucher")
+    public ResponseEntity<ResponseDto> getNextVoucherNumber() {
+        return new ResponseEntity<>(
+                new ResponseDto(
+                        dataAccessService.getNextVoucherNumber(),
+                        true)
+                , HttpStatus.OK
+        );
+    }
 }
