@@ -34,11 +34,15 @@ public class User {
     @Column(name = "email", nullable = false)
     private String email;
 
+    @Column(name = "hierarchy", nullable = false)
+    private Integer hierarchy;
+
     @Column(name = "enabled")
     private Boolean enabled;
 
-    //@OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    //private Signatory signatory;
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "role_id", nullable = false)
+    private Role role;
 
     @PrePersist
     public void prePersist() {

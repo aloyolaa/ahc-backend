@@ -2,7 +2,6 @@ package com.petrotal.ahcbackend.service.data.impl;
 
 import com.petrotal.ahcbackend.dto.DataDto;
 import com.petrotal.ahcbackend.entity.Data;
-import com.petrotal.ahcbackend.entity.User;
 import com.petrotal.ahcbackend.exception.DataAccessExceptionImpl;
 import com.petrotal.ahcbackend.mapper.DataMapper;
 import com.petrotal.ahcbackend.repository.DataRepository;
@@ -81,6 +80,17 @@ public class DataAccessServiceImpl implements DataAccessService {
     public Boolean existsByVoucherNumber(String voucherNumber) {
         try {
             return dataRepository.existsByVoucherNumber(voucherNumber);
+        } catch (DataAccessException | TransactionException e) {
+            throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde.", e);
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public int getNextVoucherNumber() {
+        try {
+            return
+                    dataRepository.findByVoucherNumberNotNullOrderByVoucherNumberDesc() + 1;
         } catch (DataAccessException | TransactionException e) {
             throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde.", e);
         }

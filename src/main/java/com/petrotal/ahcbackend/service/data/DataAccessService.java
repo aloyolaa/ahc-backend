@@ -15,4 +15,6 @@ public interface DataAccessService {
     void saveAll(List<Data> data);
 
     Boolean existsByVoucherNumber(String voucherNumber);
+
+    int getNextVoucherNumber();
 }
