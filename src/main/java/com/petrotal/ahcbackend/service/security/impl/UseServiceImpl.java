@@ -10,6 +10,9 @@ import com.petrotal.ahcbackend.service.security.UserService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataAccessException;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionException;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class UseServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     @Transactional(readOnly = true)
@@ -43,6 +47,17 @@ public class UseServiceImpl implements UserService {
     }
 
     @Override
+    public String getUsernameFromSecurityContext() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (principal instanceof UserDetails userDetails) {
+            return userDetails.getUsername();
+        } else {
+            return principal.toString();
+        }
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public UserSignatoryDto findByRole(String role) {
         try {
@@ -57,7 +72,8 @@ public class UseServiceImpl implements UserService {
     @Override
     @Transactional
     public User save(UserRegisterDto userRegisterDto) {
-        //user.setPassword(passwordEncoder.encode(user.getPassword()));
-        return userRepository.save(userMapper.toUser(userRegisterDto));
+        User user = userMapper.toUser(userRegisterDto);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        return userRepository.save(user);
     }
 }

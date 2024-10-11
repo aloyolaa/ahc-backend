@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -16,6 +17,7 @@ public class DataController {
     private final DataAccessService dataAccessService;
 
     @PostMapping("/save")
+    @PreAuthorize("hasAuthority('REGISTER')")
     public ResponseEntity<ResponseDto> save(@Valid @RequestBody DataDto dataDto) {
         dataAccessService.save(dataDto);
         return new ResponseEntity<>(
@@ -27,6 +29,7 @@ public class DataController {
     }
 
     @GetMapping("/next-voucher")
+    @PreAuthorize("hasAuthority('REGISTER')")
     public ResponseEntity<ResponseDto> getNextVoucherNumber() {
         return new ResponseEntity<>(
                 new ResponseDto(

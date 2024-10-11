@@ -6,6 +6,7 @@ import com.petrotal.ahcbackend.service.security.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,10 +18,12 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/register")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<ResponseDto> register(@RequestBody UserRegisterDto userRegisterDto) {
+        userService.save(userRegisterDto);
         return new ResponseEntity<>(
                 new ResponseDto(
-                        userService.save(userRegisterDto),
+                        "Datos guardados correctamente.",
                         true)
                 , HttpStatus.OK);
     }
@@ -35,6 +38,7 @@ public class UserController {
     }
 
     @GetMapping("/signatories")
+    @PreAuthorize("hasAuthority('REGISTER')")
     public ResponseEntity<ResponseDto> getSignatories() {
         return new ResponseEntity<>(
                 new ResponseDto(
