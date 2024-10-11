@@ -38,4 +38,15 @@ public class DataController {
                 , HttpStatus.OK
         );
     }
+
+    @GetMapping("/pending-vouchers/{userId}")
+    @PreAuthorize("hasAnyAuthority('FIELD_MANAGER', 'LOGISTICS_COORDINATOR', 'PRODUCTION_SUPERINTENDENT', 'STORE')")
+    public ResponseEntity<ResponseDto> getPendingVouchers(@PathVariable Long userId) {
+        return new ResponseEntity<>(
+                new ResponseDto(
+                        dataAccessService.findBySignatory(userId),
+                        true)
+                , HttpStatus.OK
+        );
+    }
 }

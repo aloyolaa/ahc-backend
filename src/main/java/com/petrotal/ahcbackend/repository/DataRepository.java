@@ -16,4 +16,10 @@ public interface DataRepository extends JpaRepository<Data, Long> {
 
     @Query("select MAX(d.voucherNumber) from Data d")
     Integer findByVoucherNumberNotNullOrderByVoucherNumberDesc();
+
+    @Query("""
+            select d from Data d inner join d.dataSignatories dataSignatories
+            where dataSignatories.user.id = ?1
+            order by d.dispatchDate DESC""")
+    List<Data> findByDataSignatoriesUserIdOrderByDispatchDateDesc(Long id);
 }
