@@ -6,6 +6,7 @@ import com.petrotal.ahcbackend.service.data.SignatoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -17,6 +18,7 @@ public class SignatoryController {
     private final DataSignatoryService dataSignatoryService;
 
     @PostMapping("/save/{userId}")
+    @PreAuthorize("hasAnyAuthority('FIELD_MANAGER', 'LOGISTICS_COORDINATOR', 'PRODUCTION_SUPERINTENDENT', 'STORE')")
     public ResponseEntity<ResponseDto> save(@PathVariable Long userId, @RequestParam MultipartFile signatureFile) {
         return new ResponseEntity<>(
                 new ResponseDto(
@@ -26,6 +28,7 @@ public class SignatoryController {
     }
 
     @GetMapping("/by-user/{userId}")
+    @PreAuthorize("hasAnyAuthority('FIELD_MANAGER', 'LOGISTICS_COORDINATOR', 'PRODUCTION_SUPERINTENDENT', 'STORE')")
     public ResponseEntity<ResponseDto> getByUser(@PathVariable Long userId) {
         return new ResponseEntity<>(
                 new ResponseDto(
@@ -35,6 +38,7 @@ public class SignatoryController {
     }
 
     @PutMapping("/update/signature/{id}")
+    @PreAuthorize("hasAnyAuthority('FIELD_MANAGER', 'LOGISTICS_COORDINATOR', 'PRODUCTION_SUPERINTENDENT', 'STORE')")
     public ResponseEntity<ResponseDto> updateSignature(@PathVariable Long id, @RequestParam MultipartFile signatureFile) {
         return new ResponseEntity<>(
                 new ResponseDto(
@@ -44,6 +48,7 @@ public class SignatoryController {
     }
 
     @PutMapping("/sign/{voucherId}/{userId}")
+    @PreAuthorize("hasAnyAuthority('FIELD_MANAGER', 'LOGISTICS_COORDINATOR', 'PRODUCTION_SUPERINTENDENT', 'STORE')")
     public ResponseEntity<ResponseDto> sign(@PathVariable Long voucherId, @PathVariable Long userId) {
         dataSignatoryService.sign(voucherId, userId);
         return new ResponseEntity<>(

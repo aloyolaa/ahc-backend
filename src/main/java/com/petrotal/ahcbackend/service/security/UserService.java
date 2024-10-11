@@ -9,6 +9,8 @@ public interface UserService {
 
     User findByUsername(String username);
 
+    String getUsernameFromSecurityContext();
+
     UserSignatoryDto findByRole(String role);
 
     User save(UserRegisterDto userRegisterDto);

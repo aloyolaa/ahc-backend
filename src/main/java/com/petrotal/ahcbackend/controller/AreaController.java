@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -16,6 +17,7 @@ public class AreaController {
     private final AreaService areaService;
 
     @GetMapping("/")
+    @PreAuthorize("hasAuthority('REGISTER')")
     public ResponseEntity<ResponseDto> getAll() {
         return new ResponseEntity<>(
                 new ResponseDto(
@@ -26,6 +28,7 @@ public class AreaController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('REGISTER')")
     public ResponseEntity<ResponseDto> getById(@PathVariable Long id) {
         return new ResponseEntity<>(
                 new ResponseDto(
@@ -36,10 +39,12 @@ public class AreaController {
     }
 
     @PostMapping("/save")
+    @PreAuthorize("hasAuthority('REGISTER')")
     public ResponseEntity<ResponseDto> save(@Valid @RequestBody AreaDto areaDto) {
+        areaService.save(areaDto);
         return new ResponseEntity<>(
                 new ResponseDto(
-                        areaService.save(areaDto),
+                        "Datos guardados correctamente.",
                         true)
                 , HttpStatus.OK
         );

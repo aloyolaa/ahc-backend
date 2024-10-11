@@ -1,18 +1,19 @@
 package com.petrotal.ahcbackend.configuration;
 
+import com.petrotal.ahcbackend.configuration.filter.JwtAuthenticationFilter;
+import com.petrotal.ahcbackend.configuration.filter.JwtValidationFilter;
+import com.petrotal.ahcbackend.service.security.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
-import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -22,16 +23,11 @@ import org.springframework.web.filter.CorsFilter;
 import java.util.Arrays;
 
 @Configuration
+@EnableMethodSecurity
 @RequiredArgsConstructor
-@EnableAsync
 public class SecurityConfig {
     private final AuthenticationConfiguration authenticationConfiguration;
-    //private final UserService userService;
-
-    @Bean
-    PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+    private final UserService userService;
 
     @Bean
     AuthenticationManager authenticationManager() throws Exception {
@@ -42,10 +38,11 @@ public class SecurityConfig {
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.authorizeHttpRequests(
                         auth -> auth
-                                .requestMatchers("/**").permitAll()
+                                .requestMatchers("/carbon-footprint/calculate").permitAll()
+                                .anyRequest().authenticated()
                 )
-                //.addFilter(new JwtAuthenticationFilter(authenticationManager(), userService))
-                //.addFilter(new JwtValidationFilter(authenticationManager()))
+                .addFilter(new JwtAuthenticationFilter(authenticationManager(), userService))
+                .addFilter(new JwtValidationFilter(authenticationManager()))
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

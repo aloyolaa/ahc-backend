@@ -9,6 +9,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Year;
@@ -22,6 +23,7 @@ public class CarbonFootprintController {
     private final CarbonFootprintService carbonFootprintService;
 
     @GetMapping("/emission-factor/{fuelType}/{consumptionType}")
+    @PreAuthorize("hasAuthority('REGISTER')")
     public ResponseEntity<ResponseDto> getEmissionFactor(@PathVariable String fuelType, @PathVariable String consumptionType) {
         return new ResponseEntity<>(
                 new ResponseDto(
@@ -31,6 +33,7 @@ public class CarbonFootprintController {
     }
 
     @GetMapping("/global-warming-potential")
+    @PreAuthorize("hasAuthority('REGISTER')")
     public ResponseEntity<ResponseDto> getGlobalWarmingPotential() {
         return new ResponseEntity<>(
                 new ResponseDto(
@@ -40,6 +43,7 @@ public class CarbonFootprintController {
     }
 
     @PostMapping("/emission-factor/save/{fuelType}/{consumptionType}")
+    @PreAuthorize("hasAuthority('REGISTER')")
     public ResponseEntity<ResponseDto> saveEmissionFactor(@Valid @RequestBody GasDto gasDto, @PathVariable String fuelType, @PathVariable String consumptionType) {
         emissionFactorService.save(gasDto, fuelType, consumptionType);
         return new ResponseEntity<>(
@@ -50,6 +54,7 @@ public class CarbonFootprintController {
     }
 
     @PostMapping("/global-warming-potential/save")
+    @PreAuthorize("hasAuthority('REGISTER')")
     public ResponseEntity<ResponseDto> saveGlobalWarmingPotentialDto(@Valid @RequestBody GasDto gasDto) {
         globalWarmingPotentialService.save(gasDto);
         return new ResponseEntity<>(
