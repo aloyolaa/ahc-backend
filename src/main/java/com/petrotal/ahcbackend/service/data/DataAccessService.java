@@ -1,6 +1,7 @@
 package com.petrotal.ahcbackend.service.data;
 
 import com.petrotal.ahcbackend.dto.DataDto;
+import com.petrotal.ahcbackend.dto.DataListDto;
 import com.petrotal.ahcbackend.entity.Data;
 
 import java.util.List;
@@ -10,6 +11,8 @@ public interface DataAccessService {
 
     Data findById(Long id);
 
+    DataDto findByVoucherNumber(String voucherNumber);
+
     void save(DataDto dataDto);
 
     void saveAll(List<Data> data);
@@ -17,4 +20,8 @@ public interface DataAccessService {
     Boolean existsByVoucherNumber(String voucherNumber);
 
     int getNextVoucherNumber();
+
+    List<DataListDto> findBySignatory(String username);
+
+    void cancelVoucher(String voucherNumber);
 }

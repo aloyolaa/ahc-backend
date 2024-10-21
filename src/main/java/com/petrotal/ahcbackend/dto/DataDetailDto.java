@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
 public record DataDetailDto(
+        Long id,
         @NotBlank(message = "{NotBlank.dataDetails.code}")
         String code,
         @NotBlank(message = "{NotBlank.dataDetails.condition}")
