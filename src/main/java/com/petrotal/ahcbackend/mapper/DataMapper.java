@@ -17,7 +17,6 @@ public interface DataMapper {
     @Mapping(target = "signatories", source = "dataSignatories")
     DataDto toDataDto(Data data);
 
-    @Mapping(target = "id", ignore = true)
     @Mapping(target = "area.id", source = "area")
     @Mapping(target = "contractor.id", source = "contractor")
     @Mapping(target = "equipment.id", source = "equipment")

@@ -11,6 +11,8 @@ public interface DataAccessService {
 
     Data findById(Long id);
 
+    DataDto findByVoucherNumber(String voucherNumber);
+
     void save(DataDto dataDto);
 
     void saveAll(List<Data> data);
@@ -19,5 +21,7 @@ public interface DataAccessService {
 
     int getNextVoucherNumber();
 
-    List<DataListDto> findBySignatory(Long userId);
+    List<DataListDto> findBySignatory(String username);
+
+    void cancelVoucher(String voucherNumber);
 }

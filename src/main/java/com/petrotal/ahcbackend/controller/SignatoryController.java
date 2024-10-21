@@ -47,10 +47,10 @@ public class SignatoryController {
                 , HttpStatus.OK);
     }
 
-    @PutMapping("/sign/{voucherId}/{userId}")
+    @PutMapping("/sign/{voucherId}/{username}")
     @PreAuthorize("hasAnyAuthority('FIELD_MANAGER', 'LOGISTICS_COORDINATOR', 'PRODUCTION_SUPERINTENDENT', 'STORE')")
-    public ResponseEntity<ResponseDto> sign(@PathVariable Long voucherId, @PathVariable Long userId) {
-        dataSignatoryService.sign(voucherId, userId);
+    public ResponseEntity<ResponseDto> sign(@PathVariable Long voucherId, @PathVariable String username) {
+        dataSignatoryService.sign(voucherId, username);
         return new ResponseEntity<>(
                 new ResponseDto(
                         "Voucher firmado correctamente",

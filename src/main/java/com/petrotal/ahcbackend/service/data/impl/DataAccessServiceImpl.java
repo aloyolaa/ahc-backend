@@ -4,12 +4,10 @@ import com.petrotal.ahcbackend.dto.DataDto;
 import com.petrotal.ahcbackend.dto.DataListDto;
 import com.petrotal.ahcbackend.entity.Data;
 import com.petrotal.ahcbackend.exception.DataAccessExceptionImpl;
+import com.petrotal.ahcbackend.exception.ModifiedDataException;
 import com.petrotal.ahcbackend.mapper.DataMapper;
 import com.petrotal.ahcbackend.repository.DataRepository;
-import com.petrotal.ahcbackend.service.data.AreaService;
-import com.petrotal.ahcbackend.service.data.ContractorService;
-import com.petrotal.ahcbackend.service.data.DataAccessService;
-import com.petrotal.ahcbackend.service.data.EquipmentService;
+import com.petrotal.ahcbackend.service.data.*;
 import com.petrotal.ahcbackend.service.security.UserService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +23,7 @@ import java.util.List;
 public class DataAccessServiceImpl implements DataAccessService {
     private final DataRepository dataRepository;
     private final DataMapper dataMapper;
+    private final DataSignatoryService dataSignatoryService;
     private final UserService userService;
     private final AreaService areaService;
     private final ContractorService contractorService;
@@ -52,6 +51,17 @@ public class DataAccessServiceImpl implements DataAccessService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public DataDto findByVoucherNumber(String voucherNumber) {
+        try {
+            return dataMapper.toDataDto(dataRepository.findByVoucherNumber(voucherNumber)
+                    .orElseThrow(() -> new EntityNotFoundException("Voucher con el número " + voucherNumber + " no existe.")));
+        } catch (DataAccessException | TransactionException e) {
+            throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde.", e);
+        }
+    }
+
+    @Override
     @Transactional
     public void save(DataDto dataDto) {
         try {
@@ -59,8 +69,15 @@ public class DataAccessServiceImpl implements DataAccessService {
             /*data.setArea(areaService.findById(data.getArea().getId()));
             data.setContractor(contractorService.findById(data.getContractor().getId()));
             data.setEquipment(equipmentService.findById(data.getEquipment().getId()));*/
+
+            if (data.getId() != null && dataSignatoryService.countSignatories(data.getId()) > 0) {
+                throw new ModifiedDataException("El Voucher con el ID " + data.getId() + " ya tiene firmas y no se puede modificar.");
+            }
+
+            data.setStatus("PENDIENTE");
             data.getDataDetails().forEach(dt -> dt.setData(data));
             data.getDataSignatories().forEach(ds -> ds.setData(data));
+
             dataRepository.save(data);
         } catch (DataAccessException | TransactionException e) {
             throw new DataAccessExceptionImpl("Error al guardar los datos. Inténtelo mas tarde.", e);
@@ -98,11 +115,26 @@ public class DataAccessServiceImpl implements DataAccessService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<DataListDto> findBySignatory(Long userId) {
+    public List<DataListDto> findBySignatory(String username) {
         try {
-            return dataMapper.toDataListDtos(dataRepository.findByDataSignatoriesUserIdOrderByDispatchDateDesc(userId));
+            return dataMapper.toDataListDtos(dataRepository.findByDataSignatoriesUserIdOrderByDispatchDateDesc(username));
         } catch (DataAccessException | TransactionException e) {
             throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde.", e);
         }
+    }
+
+    @Override
+    @Transactional
+    public void cancelVoucher(String voucherNumber) {
+        try {
+            if (!dataRepository.existsByVoucherNumber(voucherNumber)) {
+                throw new EntityNotFoundException("Voucher con el número " + voucherNumber + " no existe.");
+            }
+
+            dataRepository.updateStatusByVoucherNumber(voucherNumber);
+        } catch (DataAccessException | TransactionException e) {
+            throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde.", e);
+        }
+
     }
 }

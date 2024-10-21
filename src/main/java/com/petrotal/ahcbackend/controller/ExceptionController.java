@@ -2,10 +2,7 @@ package com.petrotal.ahcbackend.controller;
 
 import com.petrotal.ahcbackend.dto.ErrorResponse;
 import com.petrotal.ahcbackend.dto.ResponseDto;
-import com.petrotal.ahcbackend.exception.ConvertPdfException;
-import com.petrotal.ahcbackend.exception.DataAccessExceptionImpl;
-import com.petrotal.ahcbackend.exception.FileStorageException;
-import com.petrotal.ahcbackend.exception.InvalidVariableException;
+import com.petrotal.ahcbackend.exception.*;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -92,6 +89,18 @@ public class ExceptionController {
         String errorMessage = "FileStorageException: " + e.getMessage();
         log.error(errorMessage);
         ErrorResponse errorResponse = new ErrorResponse("Error al Manejar Archivo", e.getMessage());
+        return new ResponseEntity<>(
+                new ResponseDto(
+                        errorResponse,
+                        false)
+                , HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(ModifiedDataException.class)
+    public ResponseEntity<ResponseDto> modifiedDataException(ModifiedDataException e) {
+        String errorMessage = "ModifiedDataException: " + e.getMessage();
+        log.error(errorMessage);
+        ErrorResponse errorResponse = new ErrorResponse("Error al Actualizar", e.getMessage());
         return new ResponseEntity<>(
                 new ResponseDto(
                         errorResponse,

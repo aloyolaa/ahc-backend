@@ -9,7 +9,6 @@ import org.mapstruct.Mapping;
 public interface DataDetailsMapper {
     DataDetailDto toDataDetailsDto(DataDetail dataDetail);
 
-    @Mapping(target = "id", ignore = true)
     @Mapping(target = "data", ignore = true)
     @Mapping(target = "description", expression = "java(com.petrotal.ahcbackend.enumerator.FuelType.valueOf(dataDetailDto.description().toUpperCase()))")
     @Mapping(target = "location", expression = "java(dataDetailDto.location().toUpperCase())")

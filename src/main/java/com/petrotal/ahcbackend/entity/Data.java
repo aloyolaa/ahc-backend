@@ -1,16 +1,12 @@
 package com.petrotal.ahcbackend.entity;
 
-import com.petrotal.ahcbackend.enumerator.FuelType;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -46,9 +42,17 @@ public class Data {
     @JoinColumn(name = "equipment_id", nullable = false)
     private Equipment equipment;
 
+    @Column(name = "status")
+    private String status;
+
     @OneToMany(mappedBy = "data", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DataDetail> dataDetails = new ArrayList<>();
 
     @OneToMany(mappedBy = "data", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DataSignatory> dataSignatories = new ArrayList<>();
+
+    @PrePersist
+    public void prePersist() {
+        this.status = "PENDIENTE";
+    }
 }

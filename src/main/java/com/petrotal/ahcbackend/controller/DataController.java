@@ -28,6 +28,17 @@ public class DataController {
         );
     }
 
+    @GetMapping("/voucher-number/{voucherNumber}")
+    @PreAuthorize("hasAuthority('REGISTER')")
+    public ResponseEntity<ResponseDto> getByVoucherNumber(@PathVariable String voucherNumber) {
+        return new ResponseEntity<>(
+                new ResponseDto(
+                        dataAccessService.findByVoucherNumber(voucherNumber),
+                        true)
+                , HttpStatus.OK
+        );
+    }
+
     @GetMapping("/next-voucher")
     @PreAuthorize("hasAuthority('REGISTER')")
     public ResponseEntity<ResponseDto> getNextVoucherNumber() {
@@ -39,12 +50,24 @@ public class DataController {
         );
     }
 
-    @GetMapping("/pending-vouchers/{userId}")
+    @GetMapping("/pending-vouchers/{username}")
     @PreAuthorize("hasAnyAuthority('FIELD_MANAGER', 'LOGISTICS_COORDINATOR', 'PRODUCTION_SUPERINTENDENT', 'STORE')")
-    public ResponseEntity<ResponseDto> getPendingVouchers(@PathVariable Long userId) {
+    public ResponseEntity<ResponseDto> getPendingVouchers(@PathVariable String username) {
         return new ResponseEntity<>(
                 new ResponseDto(
-                        dataAccessService.findBySignatory(userId),
+                        dataAccessService.findBySignatory(username),
+                        true)
+                , HttpStatus.OK
+        );
+    }
+
+    @GetMapping("/cancel/{voucherNumber}")
+    @PreAuthorize("hasAuthority('REGISTER')")
+    public ResponseEntity<ResponseDto> cancelVoucher(@PathVariable String voucherNumber) {
+        dataAccessService.cancelVoucher(voucherNumber);
+        return new ResponseEntity<>(
+                new ResponseDto(
+                        "Voucher " + voucherNumber + " ha sido anulado.",
                         true)
                 , HttpStatus.OK
         );
