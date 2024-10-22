@@ -47,7 +47,7 @@ public class SignatoryController {
                 , HttpStatus.OK);
     }
 
-    @PutMapping("/sign/{voucherId}/{username}")
+    @GetMapping("/sign/{voucherId}/{username}")
     @PreAuthorize("hasAnyAuthority('FIELD_MANAGER', 'LOGISTICS_COORDINATOR', 'PRODUCTION_SUPERINTENDENT', 'STORE')")
     public ResponseEntity<ResponseDto> sign(@PathVariable Long voucherId, @PathVariable String username) {
         dataSignatoryService.sign(voucherId, username);
