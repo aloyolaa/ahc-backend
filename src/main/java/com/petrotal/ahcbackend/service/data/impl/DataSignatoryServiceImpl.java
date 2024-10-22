@@ -16,13 +16,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class DataSignatoryServiceImpl implements DataSignatoryService {
     private final DataSignatoryRepository dataSignatoryRepository;
     private final UserService userService;
-    //private final DataAccessService dataAccessService;
 
     @Override
     @Transactional
-    public void sign(Long voucherId, String username) {
-        User user = userService.findByUsername(username);
-        //Data data = dataAccessService.findById(voucherId);
+    public void sign(Long voucherId) {
+        User user = userService.findByUsername(userService.getUsernameFromSecurityContext());
 
         try {
             dataSignatoryRepository.updateIsSignedByDataAndUser(voucherId, user.getId());
