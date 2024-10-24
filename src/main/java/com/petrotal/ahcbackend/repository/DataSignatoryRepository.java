@@ -14,4 +14,7 @@ public interface DataSignatoryRepository extends JpaRepository<DataSignatory, Lo
 
     @Query("select count(d) from DataSignatory d where d.data.id = ?1 and d.isSigned = true")
     long countByDataIdAndIsSignedTrue(Long id);
+
+    @Query("select (count(d) > 0) from DataSignatory d where d.user.id = ?1")
+    boolean existsByUserId(Long id);
 }
