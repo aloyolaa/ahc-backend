@@ -56,12 +56,13 @@ public class SignatoryServiceImpl implements SignatoryService {
 
     @Override
     @Transactional
-    public Signatory updateSignature(Long id, MultipartFile signatureFile) {
-        Signatory signatory = signatoryRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Signatario con el ID " + id + " no existe."));
+    public void updateSignature(MultipartFile signatureFile) {
+        User user = userService.findByUsername(userService.getUsernameFromSecurityContext());
+        Signatory signatory = signatoryRepository.findById(user.getId()).orElseThrow(() -> new EntityNotFoundException("Signatario con el ID " + user.getId() + " no existe."));
         String previousSignature = signatory.getSignature();
         String signaturePath = fileStorageService.storeFile(signatureFile);
         signatory.setSignature(signaturePath);
         fileStorageService.deleteFile(previousSignature);
-        return signatoryRepository.save(signatory);
+        signatoryRepository.save(signatory);
     }
 }
