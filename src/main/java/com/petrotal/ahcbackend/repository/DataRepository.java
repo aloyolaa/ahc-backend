@@ -26,6 +26,7 @@ public interface DataRepository extends JpaRepository<Data, Long> {
     @Query("""
             select d from Data d inner join d.dataSignatories dataSignatories
             where dataSignatories.user.username = ?1
+            and dataSignatories.isSigned = FALSE
             order by d.dispatchDate DESC""")
     List<Data> findByDataSignatoriesUserIdOrderByDispatchDateDesc(String username);
 
