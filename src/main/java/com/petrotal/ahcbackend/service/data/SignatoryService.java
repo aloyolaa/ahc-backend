@@ -8,5 +8,7 @@ public interface SignatoryService {
 
     SignatoryDto getByUser();
 
+    Boolean existsByUser(Long userId);
+
     void updateSignature(MultipartFile signatureFile);
 }

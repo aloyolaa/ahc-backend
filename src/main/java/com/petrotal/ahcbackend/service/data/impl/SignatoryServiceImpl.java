@@ -55,6 +55,12 @@ public class SignatoryServiceImpl implements SignatoryService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public Boolean existsByUser(Long userId) {
+        return signatoryRepository.existsByUser_Id(userId);
+    }
+
+    @Override
     @Transactional
     public void updateSignature(MultipartFile signatureFile) {
         User user = userService.findByUsername(userService.getUsernameFromSecurityContext());

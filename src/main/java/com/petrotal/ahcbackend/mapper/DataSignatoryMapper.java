@@ -12,7 +12,6 @@ public interface DataSignatoryMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "data", ignore = true)
-    @Mapping(target = "isSigned", ignore = true)
     @Mapping(target = "user.id", source = "user")
     DataSignatory toDataSignatories(DataSignatoryDto dataSignatoryDto);
 }

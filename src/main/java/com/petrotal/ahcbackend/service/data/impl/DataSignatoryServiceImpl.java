@@ -6,6 +6,7 @@ import com.petrotal.ahcbackend.entity.User;
 import com.petrotal.ahcbackend.exception.DataAccessExceptionImpl;
 import com.petrotal.ahcbackend.repository.DataSignatoryRepository;
 import com.petrotal.ahcbackend.service.data.DataSignatoryService;
+import com.petrotal.ahcbackend.service.data.SignatoryService;
 import com.petrotal.ahcbackend.service.security.UserService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class DataSignatoryServiceImpl implements DataSignatoryService {
     private final DataSignatoryRepository dataSignatoryRepository;
+    private final SignatoryService signatoryService;
     private final UserService userService;
 
     @Override
@@ -33,11 +35,10 @@ public class DataSignatoryServiceImpl implements DataSignatoryService {
         dataSignatory.setUser(user);
 
         try {
-            if (dataSignatoryRepository.existsByUserId(user.getId())) {
+            if (Boolean.FALSE.equals(signatoryService.existsByUser(user.getId()))) {
                 throw new EntityNotFoundException("Usted no tiene una firma registrada.");
             }
 
-            //dataSignatoryRepository.updateIsSignedByDataAndUser(voucherId, user.getId());
             dataSignatoryRepository.save(dataSignatory);
         } catch (DataAccessException | TransactionException e) {
             throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde.", e);
