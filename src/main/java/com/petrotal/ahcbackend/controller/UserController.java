@@ -38,7 +38,7 @@ public class UserController {
                 , HttpStatus.OK);
     }
 
-    @GetMapping("/signatories")
+    /*@GetMapping("/signatories")
     @PreAuthorize("hasAuthority('REGISTER')")
     public ResponseEntity<ResponseDto> getSignatories() {
         return new ResponseEntity<>(
@@ -51,5 +51,5 @@ public class UserController {
                         ),
                         true)
                 , HttpStatus.OK);
-    }
+    }*/
 }

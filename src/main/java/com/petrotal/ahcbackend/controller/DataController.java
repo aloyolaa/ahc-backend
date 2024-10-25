@@ -50,12 +50,12 @@ public class DataController {
         );
     }
 
-    @GetMapping("/pending-vouchers/{username}")
+    @GetMapping("/pending-vouchers")
     @PreAuthorize("hasAnyAuthority('FIELD_MANAGER', 'LOGISTICS_COORDINATOR', 'PRODUCTION_SUPERINTENDENT', 'STORE')")
-    public ResponseEntity<ResponseDto> getPendingVouchers(@PathVariable String username) {
+    public ResponseEntity<ResponseDto> getPendingVouchers() {
         return new ResponseEntity<>(
                 new ResponseDto(
-                        dataAccessService.findBySignatory(username),
+                        dataAccessService.findBySignatory(),
                         true)
                 , HttpStatus.OK
         );

@@ -6,7 +6,6 @@ public record UserRegisterDto(
         String firstName,
         String lastName,
         String email,
-        Integer hierarchy,
         Integer role
 ) {
 }

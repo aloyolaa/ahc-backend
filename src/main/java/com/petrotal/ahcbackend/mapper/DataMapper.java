@@ -8,13 +8,13 @@ import org.mapstruct.Mapping;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring", uses = {DataDetailsMapper.class, DataSignatoryMapper.class})
+@Mapper(componentModel = "spring", uses = {DataDetailsMapper.class/*, DataSignatoryMapper.class*/})
 public interface DataMapper {
     @Mapping(target = "area", source = "area.id")
     @Mapping(target = "contractor", source = "contractor.id")
     @Mapping(target = "equipment", source = "equipment.id")
     @Mapping(target = "details", source = "dataDetails")
-    @Mapping(target = "signatories", source = "dataSignatories")
+    //@Mapping(target = "signatories", source = "dataSignatories")
     DataDto toDataDto(Data data);
 
     @Mapping(target = "area.id", source = "area")
@@ -22,7 +22,7 @@ public interface DataMapper {
     @Mapping(target = "equipment.id", source = "equipment")
     @Mapping(target = "materialStatus", expression = "java(dataDto.materialStatus().toUpperCase())")
     @Mapping(target = "dataDetails", source = "details")
-    @Mapping(target = "dataSignatories", source = "signatories")
+    @Mapping(target = "dataSignatories", ignore = true)
     Data toData(DataDto dataDto);
 
     List<DataListDto> toDataListDtos(List<Data> data);

@@ -7,10 +7,10 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 
 public interface DataSignatoryRepository extends JpaRepository<DataSignatory, Long> {
-    @Transactional
+    /*@Transactional
     @Modifying
     @Query("update DataSignatory d set d.isSigned = TRUE where d.data.id = ?1 and d.user.id = ?2")
-    void updateIsSignedByDataAndUser(Long dataId, Long userId);
+    void updateIsSignedByDataAndUser(Long dataId, Long userId);*/
 
     @Query("select count(d) from DataSignatory d where d.data.id = ?1 and d.isSigned = true")
     long countByDataIdAndIsSignedTrue(Long id);

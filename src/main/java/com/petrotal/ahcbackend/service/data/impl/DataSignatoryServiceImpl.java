@@ -1,5 +1,7 @@
 package com.petrotal.ahcbackend.service.data.impl;
 
+import com.petrotal.ahcbackend.entity.Data;
+import com.petrotal.ahcbackend.entity.DataSignatory;
 import com.petrotal.ahcbackend.entity.User;
 import com.petrotal.ahcbackend.exception.DataAccessExceptionImpl;
 import com.petrotal.ahcbackend.repository.DataSignatoryRepository;
@@ -23,12 +25,20 @@ public class DataSignatoryServiceImpl implements DataSignatoryService {
     public void sign(Long voucherId) {
         User user = userService.findByUsername(userService.getUsernameFromSecurityContext());
 
+
+        DataSignatory dataSignatory = new DataSignatory();
+        Data data = new Data();
+        data.setId(voucherId);
+        dataSignatory.setData(data);
+        dataSignatory.setUser(user);
+
         try {
             if (dataSignatoryRepository.existsByUserId(user.getId())) {
                 throw new EntityNotFoundException("Usted no tiene una firma registrada.");
             }
 
-            dataSignatoryRepository.updateIsSignedByDataAndUser(voucherId, user.getId());
+            //dataSignatoryRepository.updateIsSignedByDataAndUser(voucherId, user.getId());
+            dataSignatoryRepository.save(dataSignatory);
         } catch (DataAccessException | TransactionException e) {
             throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde.", e);
         }

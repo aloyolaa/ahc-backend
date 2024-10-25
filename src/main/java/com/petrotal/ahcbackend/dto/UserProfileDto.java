@@ -5,7 +5,6 @@ public record UserProfileDto(
         String firstName,
         String lastName,
         String email,
-        Integer hierarchy,
         String role
 ) {
 }

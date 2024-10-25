@@ -76,7 +76,7 @@ public class DataAccessServiceImpl implements DataAccessService {
 
             data.setStatus("PENDIENTE");
             data.getDataDetails().forEach(dt -> dt.setData(data));
-            data.getDataSignatories().forEach(ds -> ds.setData(data));
+            //data.getDataSignatories().forEach(ds -> ds.setData(data));
 
             dataRepository.save(data);
         } catch (DataAccessException | TransactionException e) {
@@ -115,9 +115,9 @@ public class DataAccessServiceImpl implements DataAccessService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<DataListDto> findBySignatory(String username) {
+    public List<DataListDto> findBySignatory() {
         try {
-            return dataMapper.toDataListDtos(dataRepository.findByDataSignatoriesUserIdOrderByDispatchDateDesc(username));
+            return List.of();//dataMapper.toDataListDtos(dataRepository.findByDataSignatoriesUserIdOrderByDispatchDateDesc(username));
         } catch (DataAccessException | TransactionException e) {
             throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde.", e);
         }

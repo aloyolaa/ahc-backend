@@ -34,9 +34,6 @@ public class User {
     @Column(name = "email", nullable = false)
     private String email;
 
-    @Column(name = "hierarchy", nullable = false)
-    private Integer hierarchy;
-
     @Column(name = "enabled")
     private Boolean enabled;
 

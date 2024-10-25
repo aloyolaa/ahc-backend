@@ -22,11 +22,11 @@ public class DataSignatory {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @Column(name = "is_signed", nullable = false)
-    private Boolean isSigned = false;
+    /*@Column(name = "is_signed", nullable = false)
+    private Boolean isSigned = false;*/
 
-    @PrePersist
+    /*@PrePersist
     public void prePersist() {
         this.isSigned = false;
-    }
+    }*/
 }
