@@ -72,4 +72,14 @@ public class CarbonFootprintController {
                         , true)
                 , HttpStatus.OK);
     }
+
+    @GetMapping("/variables")
+    @PreAuthorize("hasAuthority('REGISTER')")
+    public ResponseEntity<ResponseDto> getAllVariables() {
+        return new ResponseEntity<>(
+                new ResponseDto(
+                        carbonFootprintService.getAllVariables()
+                        , true)
+                , HttpStatus.OK);
+    }
 }

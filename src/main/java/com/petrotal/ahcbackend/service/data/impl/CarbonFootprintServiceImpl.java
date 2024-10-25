@@ -1,6 +1,7 @@
 package com.petrotal.ahcbackend.service.data.impl;
 
 import com.petrotal.ahcbackend.dto.CarbonFootprintDto;
+import com.petrotal.ahcbackend.dto.CarbonFootprintVariablesDto;
 import com.petrotal.ahcbackend.entity.Data;
 import com.petrotal.ahcbackend.entity.EmissionFactor;
 import com.petrotal.ahcbackend.entity.GlobalWarmingPotential;
@@ -60,6 +61,17 @@ public class CarbonFootprintServiceImpl implements CarbonFootprintService {
                 formatNumber(mobileMachineryGasolineConsumption),
                 mobileMachineryGasolineCalculate,
                 formatNumber(mobileMachineryGasolineCalculate)
+        );
+    }
+
+    @Override
+    public CarbonFootprintVariablesDto getAllVariables() {
+        return new CarbonFootprintVariablesDto(
+                emissionFactorService.findByYear(Year.now().getValue(), FuelType.GASOLINE.name(), EquipmentType.STATIONARY.name()),
+                emissionFactorService.findByYear(Year.now().getValue(), FuelType.DIESEL.name(), EquipmentType.STATIONARY.name()),
+                emissionFactorService.findByYear(Year.now().getValue(), FuelType.GASOLINE.name(), EquipmentType.MOBILE.name()),
+                emissionFactorService.findByYear(Year.now().getValue(), FuelType.DIESEL.name(), EquipmentType.MOBILE.name()),
+                globalWarmingPotentialService.findByYear(Year.now().getValue())
         );
     }
 
