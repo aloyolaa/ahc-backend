@@ -1,5 +1,6 @@
 package com.petrotal.ahcbackend.service.security.impl;
 
+import com.petrotal.ahcbackend.dto.UserProfileDto;
 import com.petrotal.ahcbackend.dto.UserRegisterDto;
 import com.petrotal.ahcbackend.dto.UserSignatoryDto;
 import com.petrotal.ahcbackend.entity.User;
@@ -47,6 +48,11 @@ public class UseServiceImpl implements UserService {
     }
 
     @Override
+    public UserProfileDto getProfile() {
+        return userMapper.toUserProfileDto(findByUsername(getUsernameFromSecurityContext()));
+    }
+
+    @Override
     public String getUsernameFromSecurityContext() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
@@ -63,7 +69,7 @@ public class UseServiceImpl implements UserService {
         try {
             return userMapper.toUserSignatoryDto(
                     userRepository.findByRoleAndEnabledTrueOrderByHierarchyAsc(role)
-                            .orElseThrow(() -> new EntityNotFoundException("No existe un usuario con el rol: " + role + ".")));
+                            .orElseThrow(() -> new EntityNotFoundException("No existe un usuario con el rol: " + role + " activo.")));
         } catch (DataAccessException | TransactionException e) {
             throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde." + e.getMessage(), e);
         }

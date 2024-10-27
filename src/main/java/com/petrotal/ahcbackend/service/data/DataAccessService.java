@@ -21,7 +21,7 @@ public interface DataAccessService {
 
     int getNextVoucherNumber();
 
-    List<DataListDto> findBySignatory(String username);
+    List<DataListDto> findBySignatory();
 
     void cancelVoucher(String voucherNumber);
 }

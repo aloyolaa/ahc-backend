@@ -27,23 +27,24 @@ public class SignatoryServiceImpl implements SignatoryService {
 
     @Override
     @Transactional
-    public Signatory save(Long userId, MultipartFile signatureFile) {
-        User user = userService.findById(userId);
+    public void save(MultipartFile signatureFile) {
+        User user = userService.findByUsername(userService.getUsernameFromSecurityContext());
         Signatory signatory = new Signatory();
         String signaturePath = fileStorageService.storeFile(signatureFile);
         signatory.setSignature(signaturePath);
         signatory.setUser(user);
-        return signatoryRepository.save(signatory);
+        signatoryRepository.save(signatory);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public SignatoryDto getByUserId(Long userId) {
-        User user = userService.findById(userId);
+    public SignatoryDto getByUser() {
+        String username = userService.getUsernameFromSecurityContext();
+        User user = userService.findByUsername(username);
 
         try {
             Signatory signatory = signatoryRepository.findByUserId(user.getId())
-                    .orElseThrow(() -> new EntityNotFoundException("El usuario con el ID " + userId + " no tiene un sello o firma asignado."));
+                    .orElseThrow(() -> new EntityNotFoundException("El usuario con el username " + username + " no tiene una firma asignada."));
 
             String signatoryFile = Base64.getEncoder().encodeToString(fileStorageService.loadFileAsResource(signatory.getSignature()));
 
@@ -54,13 +55,20 @@ public class SignatoryServiceImpl implements SignatoryService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public Boolean existsByUser(Long userId) {
+        return signatoryRepository.existsByUser_Id(userId);
+    }
+
+    @Override
     @Transactional
-    public Signatory updateSignature(Long id, MultipartFile signatureFile) {
-        Signatory signatory = signatoryRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Signatario con el ID " + id + " no existe."));
+    public void updateSignature(MultipartFile signatureFile) {
+        User user = userService.findByUsername(userService.getUsernameFromSecurityContext());
+        Signatory signatory = signatoryRepository.findById(user.getId()).orElseThrow(() -> new EntityNotFoundException("Signatario con el ID " + user.getId() + " no existe."));
         String previousSignature = signatory.getSignature();
         String signaturePath = fileStorageService.storeFile(signatureFile);
         signatory.setSignature(signaturePath);
         fileStorageService.deleteFile(previousSignature);
-        return signatoryRepository.save(signatory);
+        signatoryRepository.save(signatory);
     }
 }

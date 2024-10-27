@@ -17,32 +17,34 @@ public class SignatoryController {
     private final SignatoryService signatoryService;
     private final DataSignatoryService dataSignatoryService;
 
-    @PostMapping("/save/{userId}")
+    @PostMapping("/save")
     @PreAuthorize("hasAnyAuthority('FIELD_MANAGER', 'LOGISTICS_COORDINATOR', 'PRODUCTION_SUPERINTENDENT', 'STORE')")
-    public ResponseEntity<ResponseDto> save(@PathVariable Long userId, @RequestParam MultipartFile signatureFile) {
+    public ResponseEntity<ResponseDto> save(@RequestParam MultipartFile signatureFile) {
+        signatoryService.save(signatureFile);
         return new ResponseEntity<>(
                 new ResponseDto(
-                        signatoryService.save(userId, signatureFile),
+                        "Firma registrada correctamente.",
                         true)
                 , HttpStatus.OK);
     }
 
-    @GetMapping("/by-user/{userId}")
+    @GetMapping("/by-user")
     @PreAuthorize("hasAnyAuthority('FIELD_MANAGER', 'LOGISTICS_COORDINATOR', 'PRODUCTION_SUPERINTENDENT', 'STORE')")
-    public ResponseEntity<ResponseDto> getByUser(@PathVariable Long userId) {
+    public ResponseEntity<ResponseDto> getByUser() {
         return new ResponseEntity<>(
                 new ResponseDto(
-                        signatoryService.getByUserId(userId),
+                        signatoryService.getByUser(),
                         true)
                 , HttpStatus.OK);
     }
 
-    @PutMapping("/update/signature/{id}")
+    @PutMapping("/update/signature")
     @PreAuthorize("hasAnyAuthority('FIELD_MANAGER', 'LOGISTICS_COORDINATOR', 'PRODUCTION_SUPERINTENDENT', 'STORE')")
-    public ResponseEntity<ResponseDto> updateSignature(@PathVariable Long id, @RequestParam MultipartFile signatureFile) {
+    public ResponseEntity<ResponseDto> updateSignature(@RequestParam MultipartFile signatureFile) {
+        signatoryService.updateSignature(signatureFile);
         return new ResponseEntity<>(
                 new ResponseDto(
-                        signatoryService.updateSignature(id, signatureFile),
+                        "Firma registrada correctamente.",
                         true)
                 , HttpStatus.OK);
     }

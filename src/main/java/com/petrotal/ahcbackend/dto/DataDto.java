@@ -26,8 +26,6 @@ public record DataDto(
         @NotNull(message = "{NotNull.data.details}")
         @Size(min = 1, message = "{Size.data.details}")
         List<DataDetailDto> details,
-        @NotNull(message = "{NotNull.data.signatories}")
-        @Size(min = 1, message = "{Size.data.signatories}")
-        List<DataSignatoryDto> signatories
+        List<UserSignatoryDto> signatories
 ) {
 }

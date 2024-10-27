@@ -1,13 +1,14 @@
 package com.petrotal.ahcbackend.service.data;
 
 import com.petrotal.ahcbackend.dto.SignatoryDto;
-import com.petrotal.ahcbackend.entity.Signatory;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface SignatoryService {
-    Signatory save(Long userId, MultipartFile signatureFile);
+    void save(MultipartFile signatureFile);
 
-    SignatoryDto getByUserId(Long userId);
+    SignatoryDto getByUser();
 
-    Signatory updateSignature(Long id, MultipartFile signatureFile);
+    Boolean existsByUser(Long userId);
+
+    void updateSignature(MultipartFile signatureFile);
 }

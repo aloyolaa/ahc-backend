@@ -3,6 +3,7 @@ package com.petrotal.ahcbackend.service.data.impl;
 import com.petrotal.ahcbackend.dto.DataDto;
 import com.petrotal.ahcbackend.dto.DataListDto;
 import com.petrotal.ahcbackend.entity.Data;
+import com.petrotal.ahcbackend.entity.User;
 import com.petrotal.ahcbackend.exception.DataAccessExceptionImpl;
 import com.petrotal.ahcbackend.exception.ModifiedDataException;
 import com.petrotal.ahcbackend.mapper.DataMapper;
@@ -25,9 +26,6 @@ public class DataAccessServiceImpl implements DataAccessService {
     private final DataMapper dataMapper;
     private final DataSignatoryService dataSignatoryService;
     private final UserService userService;
-    private final AreaService areaService;
-    private final ContractorService contractorService;
-    private final EquipmentService equipmentService;
 
     @Override
     @Transactional(readOnly = true)
@@ -76,7 +74,7 @@ public class DataAccessServiceImpl implements DataAccessService {
 
             data.setStatus("PENDIENTE");
             data.getDataDetails().forEach(dt -> dt.setData(data));
-            data.getDataSignatories().forEach(ds -> ds.setData(data));
+            //data.getDataSignatories().forEach(ds -> ds.setData(data));
 
             dataRepository.save(data);
         } catch (DataAccessException | TransactionException e) {
@@ -115,9 +113,11 @@ public class DataAccessServiceImpl implements DataAccessService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<DataListDto> findBySignatory(String username) {
+    public List<DataListDto> findBySignatory() {
+        User user = userService.findByUsername(userService.getUsernameFromSecurityContext());
+
         try {
-            return dataMapper.toDataListDtos(dataRepository.findByDataSignatoriesUserIdOrderByDispatchDateDesc(username));
+            return dataMapper.toDataListDtos(dataRepository.findPendingVouchersByRole(user.getRole().getName()));
         } catch (DataAccessException | TransactionException e) {
             throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde.", e);
         }

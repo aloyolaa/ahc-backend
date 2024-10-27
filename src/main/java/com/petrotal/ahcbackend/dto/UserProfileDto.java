@@ -1,11 +1,10 @@
 package com.petrotal.ahcbackend.dto;
 
-public record UserRegisterDto(
+public record UserProfileDto(
         String username,
-        String password,
         String firstName,
         String lastName,
         String email,
-        Integer role
+        String role
 ) {
 }

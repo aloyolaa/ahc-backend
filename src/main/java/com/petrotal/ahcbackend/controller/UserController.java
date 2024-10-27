@@ -28,16 +28,17 @@ public class UserController {
                 , HttpStatus.OK);
     }
 
-    @GetMapping("/by-username/{username}")
-    public ResponseEntity<ResponseDto> getByUsername(@PathVariable String username) {
+    @GetMapping("/profile")
+    @PreAuthorize("hasAnyAuthority('FIELD_MANAGER', 'LOGISTICS_COORDINATOR', 'PRODUCTION_SUPERINTENDENT', 'STORE')")
+    public ResponseEntity<ResponseDto> getProfile() {
         return new ResponseEntity<>(
                 new ResponseDto(
-                        userService.findByUsername(username),
+                        userService.getProfile(),
                         true)
                 , HttpStatus.OK);
     }
 
-    @GetMapping("/signatories")
+    /*@GetMapping("/signatories")
     @PreAuthorize("hasAuthority('REGISTER')")
     public ResponseEntity<ResponseDto> getSignatories() {
         return new ResponseEntity<>(
@@ -50,5 +51,5 @@ public class UserController {
                         ),
                         true)
                 , HttpStatus.OK);
-    }
+    }*/
 }
