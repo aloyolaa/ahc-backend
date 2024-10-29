@@ -45,7 +45,6 @@ public class SignatoryServiceImpl implements SignatoryService {
         try {
             Signatory signatory = signatoryRepository.findByUserId(user.getId())
                     .orElseThrow(() -> new EntityNotFoundException("El usuario con el username " + username + " no tiene una firma asignada."));
-
             String signatoryFile = Base64.getEncoder().encodeToString(fileStorageService.loadFileAsResource(signatory.getSignature()));
 
             return new SignatoryDto(signatory.getId(), signatoryFile);
