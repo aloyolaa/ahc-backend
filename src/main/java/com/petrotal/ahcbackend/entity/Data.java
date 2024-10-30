@@ -24,6 +24,9 @@ public class Data {
     @Column(name = "dispatch_date", nullable = false)
     private LocalDate dispatchDate;
 
+    @Column(name = "usage_detail")
+    private String usageDetail;
+
     @Column(name = "material_status")
     private String materialStatus;
 
