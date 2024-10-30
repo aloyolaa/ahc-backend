@@ -11,7 +11,7 @@ public interface DataAccessService {
 
     Data findById(Long id);
 
-    DataDto findByVoucherNumber(String voucherNumber);
+    Data findByVoucherNumber(String voucherNumber);
 
     void save(DataDto dataDto);
 

@@ -6,7 +6,7 @@ import org.springframework.web.multipart.MultipartFile;
 public interface SignatoryService {
     void save(MultipartFile signatureFile);
 
-    SignatoryDto getByUser();
+    SignatoryDto getByUser(String username);
 
     Boolean existsByUser(Long userId);
 

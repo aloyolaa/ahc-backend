@@ -2,6 +2,7 @@ package com.petrotal.ahcbackend.controller;
 
 import com.petrotal.ahcbackend.dto.DataDto;
 import com.petrotal.ahcbackend.dto.ResponseDto;
+import com.petrotal.ahcbackend.mapper.DataMapper;
 import com.petrotal.ahcbackend.service.data.DataAccessService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class DataController {
     private final DataAccessService dataAccessService;
+    private final DataMapper dataMapper;
 
     @PostMapping("/save")
     @PreAuthorize("hasAuthority('REGISTER')")
@@ -33,7 +35,7 @@ public class DataController {
     public ResponseEntity<ResponseDto> getByVoucherNumber(@PathVariable String voucherNumber) {
         return new ResponseEntity<>(
                 new ResponseDto(
-                        dataAccessService.findByVoucherNumber(voucherNumber),
+                        dataMapper.toDataDto(dataAccessService.findByVoucherNumber(voucherNumber)),
                         true)
                 , HttpStatus.OK
         );
