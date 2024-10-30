@@ -27,6 +27,9 @@ public record DataDetailDto(
         Double unitPrice,
         @NotNull(message = "{NotNull.dataDetails.finalStock}")
         @Positive(message = "{Positive.dataDetails.finalStock}")
-        Double finalStock
+        Double finalStock,
+        @NotNull(message = "{NotNull.dataDetails.carbonFootprint}")
+        @Positive(message = "{Positive.dataDetails.carbonFootprint}")
+        Double carbonFootprint
 ) {
 }

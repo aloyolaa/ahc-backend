@@ -13,6 +13,8 @@ public record DataDto(
         @NotNull(message = "{NotNull.data.dispatchDate}")
         @PastOrPresent(message = "{PastOrPresent.data.dispatchDate}")
         LocalDate dispatchDate,
+        @NotBlank(message = "{NotBlank.data.usageDetail}")
+        String usageDetail,
         @NotBlank(message = "{NotBlank.data.materialStatus}")
         String materialStatus,
         String observations,
