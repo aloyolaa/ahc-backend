@@ -72,4 +72,15 @@ public class DataController {
                 , HttpStatus.OK
         );
     }
+
+    @GetMapping("/has-pending-vouchers")
+    @PreAuthorize("hasAnyAuthority('FIELD_MANAGER', 'LOGISTICS_COORDINATOR', 'PRODUCTION_SUPERINTENDENT', 'STORE')")
+    public ResponseEntity<ResponseDto> hasPendingVouchers() {
+        return new ResponseEntity<>(
+                new ResponseDto(
+                        dataAccessService.findBySignatory().size(),
+                        true)
+                , HttpStatus.OK
+        );
+    }
 }
