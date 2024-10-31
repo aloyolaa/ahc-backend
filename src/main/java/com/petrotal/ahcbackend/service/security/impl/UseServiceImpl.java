@@ -78,6 +78,10 @@ public class UseServiceImpl implements UserService {
     @Override
     @Transactional
     public User save(UserRegisterDto userRegisterDto) {
+        if (userRepository.existsByUsernameIgnoreCase(userRegisterDto.username())) {
+            throw new DataAccessExceptionImpl("Ya existe un usuario con el username " + userRegisterDto.username() + ".");
+        }
+
         User user = userMapper.toUser(userRegisterDto);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);

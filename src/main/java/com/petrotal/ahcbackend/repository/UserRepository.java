@@ -10,6 +10,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("select u from User u where upper(u.username) = upper(?1)")
     Optional<User> findByUsernameIgnoreCase(String username);
 
+    @Query("select (count(u) > 0) from User u where upper(u.username) = upper(?1)")
+    boolean existsByUsernameIgnoreCase(String username);
+
     @Query("select u from User u where u.role.name = ?1 and u.enabled = true")
     Optional<User> findByRoleAndEnabledTrueOrderByHierarchyAsc(String name);
 }
