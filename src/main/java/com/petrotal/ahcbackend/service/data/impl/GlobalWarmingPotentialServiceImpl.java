@@ -31,7 +31,7 @@ public class GlobalWarmingPotentialServiceImpl implements GlobalWarmingPotential
                             .orElseThrow(() -> new EntityNotFoundException("No existen datos sobre Potenciales de Calentamiento Global para el año " + year))
             );
         } catch (DataAccessException | TransactionException e) {
-            throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde.", e);
+            throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde.");
         }
     }
 
@@ -40,7 +40,7 @@ public class GlobalWarmingPotentialServiceImpl implements GlobalWarmingPotential
         try {
             return globalWarmingPotentialRepository.findByYear(year);
         } catch (DataAccessException | TransactionException e) {
-            throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde.", e);
+            throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde.");
         }
     }
 
@@ -57,7 +57,7 @@ public class GlobalWarmingPotentialServiceImpl implements GlobalWarmingPotential
                 globalWarmingPotentialRepository.save(globalWarmingPotential);
             }
         } catch (DataAccessException | TransactionException e) {
-            throw new DataAccessExceptionImpl("Error al guardar los datos. Inténtelo mas tarde.", e);
+            throw new DataAccessExceptionImpl("Error al guardar los datos. Inténtelo mas tarde.");
         }
     }
 }

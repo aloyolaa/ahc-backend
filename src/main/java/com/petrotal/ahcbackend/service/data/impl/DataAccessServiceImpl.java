@@ -33,7 +33,7 @@ public class DataAccessServiceImpl implements DataAccessService {
         try {
             return dataRepository.findByYear(year - 1);
         } catch (DataAccessException | TransactionException e) {
-            throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde.", e);
+            throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde.");
         }
     }
 
@@ -44,7 +44,7 @@ public class DataAccessServiceImpl implements DataAccessService {
             return dataRepository.findById(id)
                     .orElseThrow(() -> new EntityNotFoundException("Voucher con el ID " + id + " no existe."));
         } catch (DataAccessException | TransactionException e) {
-            throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde.", e);
+            throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde.");
         }
     }
 
@@ -55,7 +55,7 @@ public class DataAccessServiceImpl implements DataAccessService {
             return dataMapper.toDataDto(dataRepository.findByVoucherNumber(voucherNumber)
                     .orElseThrow(() -> new EntityNotFoundException("Voucher con el número " + voucherNumber + " no existe.")));
         } catch (DataAccessException | TransactionException e) {
-            throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde.", e);
+            throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde.");
         }
     }
 
@@ -78,7 +78,7 @@ public class DataAccessServiceImpl implements DataAccessService {
 
             dataRepository.save(data);
         } catch (DataAccessException | TransactionException e) {
-            throw new DataAccessExceptionImpl("Error al guardar los datos. Inténtelo mas tarde.", e);
+            throw new DataAccessExceptionImpl("Error al guardar los datos. Inténtelo mas tarde.");
         }
     }
 
@@ -87,7 +87,7 @@ public class DataAccessServiceImpl implements DataAccessService {
         try {
             dataRepository.saveAll(data);
         } catch (DataAccessException | TransactionException e) {
-            throw new DataAccessExceptionImpl("Error al guardar los datos. Inténtelo mas tarde.", e);
+            throw new DataAccessExceptionImpl("Error al guardar los datos. Inténtelo mas tarde.");
         }
     }
 
@@ -97,7 +97,7 @@ public class DataAccessServiceImpl implements DataAccessService {
         try {
             return dataRepository.existsByVoucherNumber(voucherNumber);
         } catch (DataAccessException | TransactionException e) {
-            throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde.", e);
+            throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde.");
         }
     }
 
@@ -107,7 +107,7 @@ public class DataAccessServiceImpl implements DataAccessService {
         try {
             return dataRepository.findByVoucherNumberNotNullOrderByVoucherNumberDesc() + 1;
         } catch (DataAccessException | TransactionException e) {
-            throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde.", e);
+            throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde.");
         }
     }
 
@@ -119,7 +119,7 @@ public class DataAccessServiceImpl implements DataAccessService {
         try {
             return dataMapper.toDataListDtos(dataRepository.findPendingVouchersByRole(user.getRole().getName()));
         } catch (DataAccessException | TransactionException e) {
-            throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde.", e);
+            throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde.");
         }
     }
 
@@ -133,7 +133,7 @@ public class DataAccessServiceImpl implements DataAccessService {
 
             dataRepository.updateStatusByVoucherNumber(voucherNumber);
         } catch (DataAccessException | TransactionException e) {
-            throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde.", e);
+            throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde.");
         }
 
     }

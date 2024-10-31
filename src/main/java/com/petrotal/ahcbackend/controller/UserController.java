@@ -9,8 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/user")
 @RequiredArgsConstructor
@@ -29,7 +27,7 @@ public class UserController {
     }
 
     @GetMapping("/profile")
-    @PreAuthorize("hasAnyAuthority('FIELD_MANAGER', 'LOGISTICS_COORDINATOR', 'PRODUCTION_SUPERINTENDENT', 'STORE')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'REGISTER', 'FIELD_MANAGER', 'LOGISTICS_COORDINATOR', 'PRODUCTION_SUPERINTENDENT', 'STORE')")
     public ResponseEntity<ResponseDto> getProfile() {
         return new ResponseEntity<>(
                 new ResponseDto(

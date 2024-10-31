@@ -29,6 +29,10 @@ public class SignatoryServiceImpl implements SignatoryService {
     @Transactional
     public void save(MultipartFile signatureFile) {
         User user = userService.findByUsername(userService.getUsernameFromSecurityContext());
+        if (signatoryRepository.existsByUser_Id(user.getId())) {
+            throw new DataAccessExceptionImpl("Ya tiene un firma registrada.");
+        }
+
         Signatory signatory = new Signatory();
         String signaturePath = fileStorageService.storeFile(signatureFile);
         signatory.setSignature(signaturePath);
@@ -49,7 +53,7 @@ public class SignatoryServiceImpl implements SignatoryService {
 
             return new SignatoryDto(signatory.getId(), signatoryFile);
         } catch (DataAccessException | TransactionException e) {
-            throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde.", e);
+            throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde.");
         }
     }
 
@@ -61,9 +65,9 @@ public class SignatoryServiceImpl implements SignatoryService {
 
     @Override
     @Transactional
-    public void updateSignature(MultipartFile signatureFile) {
+    public void update(MultipartFile signatureFile) {
         User user = userService.findByUsername(userService.getUsernameFromSecurityContext());
-        Signatory signatory = signatoryRepository.findById(user.getId()).orElseThrow(() -> new EntityNotFoundException("Signatario con el ID " + user.getId() + " no existe."));
+        Signatory signatory = signatoryRepository.findByUserId(user.getId()).orElseThrow(() -> new EntityNotFoundException("El usuario con el username " + user.getUsername() + " no tiene una firma asignada."));
         String previousSignature = signatory.getSignature();
         String signaturePath = fileStorageService.storeFile(signatureFile);
         signatory.setSignature(signaturePath);

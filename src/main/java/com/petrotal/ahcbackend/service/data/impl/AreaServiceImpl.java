@@ -29,7 +29,7 @@ public class AreaServiceImpl implements AreaService {
                     .orElseThrow(() -> new EntityNotFoundException("Area con el ID " + id + " no existe."));
             return areaMapper.toAreaDto(area);
         } catch (DataAccessException | TransactionException e) {
-            throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde.", e);
+            throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde.");
         }
     }
 
@@ -49,7 +49,7 @@ public class AreaServiceImpl implements AreaService {
         try {
             return areaMapper.toAreaDtos(areaRepository.findAll());
         } catch (DataAccessException | TransactionException e) {
-            throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde.", e);
+            throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde.");
         }
     }
 
@@ -65,7 +65,7 @@ public class AreaServiceImpl implements AreaService {
         try {
             return areaRepository.existsByName(name);
         } catch (DataAccessException | TransactionException e) {
-            throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde.", e);
+            throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde.");
         }
     }
 }

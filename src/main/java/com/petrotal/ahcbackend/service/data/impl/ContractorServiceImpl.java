@@ -29,7 +29,7 @@ public class ContractorServiceImpl implements ContractorService {
                     .orElseThrow(() -> new EntityNotFoundException("Contratista con el ID " + id + " no existe."));
             return contractorMapper.toContractorDto(contractor);
         } catch (DataAccessException | TransactionException e) {
-            throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde.", e);
+            throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde.");
         }
     }
 
@@ -49,7 +49,7 @@ public class ContractorServiceImpl implements ContractorService {
         try {
             return contractorMapper.toContractorDtos(contractorRepository.findAll());
         } catch (DataAccessException | TransactionException e) {
-            throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde.", e);
+            throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde.");
         }
     }
 
@@ -65,7 +65,7 @@ public class ContractorServiceImpl implements ContractorService {
         try {
             return contractorRepository.existsByName(name);
         } catch (DataAccessException | TransactionException e) {
-            throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde.", e);
+            throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde.");
         }
     }
 }
