@@ -38,10 +38,10 @@ public class SignatoryController {
                 , HttpStatus.OK);
     }
 
-    @PutMapping("/update/signature")
+    @PutMapping("/update")
     @PreAuthorize("hasAnyAuthority('FIELD_MANAGER', 'LOGISTICS_COORDINATOR', 'PRODUCTION_SUPERINTENDENT', 'STORE')")
-    public ResponseEntity<ResponseDto> updateSignature(@RequestParam MultipartFile signatureFile) {
-        signatoryService.updateSignature(signatureFile);
+    public ResponseEntity<ResponseDto> update(@RequestParam MultipartFile signatureFile) {
+        signatoryService.update(signatureFile);
         return new ResponseEntity<>(
                 new ResponseDto(
                         "Firma registrada correctamente.",

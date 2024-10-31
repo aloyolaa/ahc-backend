@@ -29,7 +29,7 @@ public class EquipmentServiceImpl implements EquipmentService {
                     .orElseThrow(() -> new EntityNotFoundException("Equipamiento con el ID " + id + " no existe."));
             return equipmentMapper.toEquipmentDto(equipment);
         } catch (DataAccessException | TransactionException e) {
-            throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde.", e);
+            throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde.");
         }
     }
 
@@ -52,7 +52,7 @@ public class EquipmentServiceImpl implements EquipmentService {
                     .map(result -> new EquipmentDto((Long) result[0], (String) result[1], (String) result[2]))
                     .toList();
         } catch (DataAccessException | TransactionException e) {
-            throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde.", e);
+            throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde.");
         }
     }
 
@@ -68,7 +68,7 @@ public class EquipmentServiceImpl implements EquipmentService {
         try {
             return equipmentRepository.existsByName(name);
         } catch (DataAccessException | TransactionException e) {
-            throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde.", e);
+            throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde.");
         }
     }
 }

@@ -41,7 +41,7 @@ public class DataSignatoryServiceImpl implements DataSignatoryService {
 
             dataSignatoryRepository.save(dataSignatory);
         } catch (DataAccessException | TransactionException e) {
-            throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde.", e);
+            throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde.");
         }
     }
 
