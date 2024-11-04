@@ -46,6 +46,9 @@ public class DataDetail {
     @Column(name = "final_stock")
     private Double finalStock;
 
+    @Column(name = "carbon_footprint")
+    private Double carbonFootprint;
+
     @ManyToOne
     @ToString.Exclude
     @JoinColumn(name = "data_id")

@@ -13,7 +13,8 @@ public class Signatory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
-    //private String position; // Cargo
+
+    @Column(name = "signature", nullable = false)
     private String signature;
 
     @OneToOne(optional = false, orphanRemoval = true)

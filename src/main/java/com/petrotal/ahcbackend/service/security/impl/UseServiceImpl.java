@@ -32,7 +32,7 @@ public class UseServiceImpl implements UserService {
             return userRepository.findById(id)
                     .orElseThrow(() -> new EntityNotFoundException("Usuario con el ID " + id + " no existe."));
         } catch (DataAccessException | TransactionException e) {
-            throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde.", e);
+            throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde.");
         }
     }
 
@@ -43,7 +43,7 @@ public class UseServiceImpl implements UserService {
             return userRepository.findByUsernameIgnoreCase(username)
                     .orElseThrow(() -> new EntityNotFoundException(String.format("Username %s no existe en el sistema!", username)));
         } catch (DataAccessException | TransactionException e) {
-            throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde.", e);
+            throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde.");
         }
     }
 
@@ -71,13 +71,17 @@ public class UseServiceImpl implements UserService {
                     userRepository.findByRoleAndEnabledTrueOrderByHierarchyAsc(role)
                             .orElseThrow(() -> new EntityNotFoundException("No existe un usuario con el rol: " + role + " activo.")));
         } catch (DataAccessException | TransactionException e) {
-            throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde." + e.getMessage(), e);
+            throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde." + e.getMessage());
         }
     }
 
     @Override
     @Transactional
     public User save(UserRegisterDto userRegisterDto) {
+        if (userRepository.existsByUsernameIgnoreCase(userRegisterDto.username())) {
+            throw new DataAccessExceptionImpl("Ya existe un usuario con el username " + userRegisterDto.username() + ".");
+        }
+
         User user = userMapper.toUser(userRegisterDto);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);

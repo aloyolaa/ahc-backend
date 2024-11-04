@@ -31,7 +31,7 @@ public class EmissionFactorServiceImpl implements EmissionFactorService {
                             .orElseThrow(() -> new EntityNotFoundException("No existen datos sobre Factores de Emisión para el año " + year + " " + fuelType + " " + consumptionType))
             );
         } catch (DataAccessException | TransactionException e) {
-            throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde.", e);
+            throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde.");
         }
     }
 
@@ -40,7 +40,7 @@ public class EmissionFactorServiceImpl implements EmissionFactorService {
         try {
             return emissionFactorRepository.findByYear(year, fuelType.toUpperCase(), consumptionType.toUpperCase());
         } catch (DataAccessException | TransactionException e) {
-            throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde.", e);
+            throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde.");
         }
     }
 
@@ -59,7 +59,7 @@ public class EmissionFactorServiceImpl implements EmissionFactorService {
                 emissionFactorRepository.save(emissionFactor);
             }
         } catch (DataAccessException | TransactionException e) {
-            throw new DataAccessExceptionImpl("Error al guardar los datos. Inténtelo mas tarde.", e);
+            throw new DataAccessExceptionImpl("Error al guardar los datos. Inténtelo mas tarde.");
         }
     }
 }

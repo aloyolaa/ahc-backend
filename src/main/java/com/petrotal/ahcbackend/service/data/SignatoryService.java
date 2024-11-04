@@ -10,5 +10,5 @@ public interface SignatoryService {
 
     Boolean existsByUser(Long userId);
 
-    void updateSignature(MultipartFile signatureFile);
+    void update(MultipartFile signatureFile);
 }

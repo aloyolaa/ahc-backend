@@ -22,6 +22,7 @@ public interface DataMapper {
     @Mapping(target = "area.id", source = "area")
     @Mapping(target = "contractor.id", source = "contractor")
     @Mapping(target = "equipment.id", source = "equipment")
+    @Mapping(target = "usageDetail", expression = "java(dataDto.usageDetail().toUpperCase())")
     @Mapping(target = "materialStatus", expression = "java(dataDto.materialStatus().toUpperCase())")
     @Mapping(target = "dataDetails", source = "details")
     @Mapping(target = "dataSignatories", ignore = true)
