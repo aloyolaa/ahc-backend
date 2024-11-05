@@ -13,6 +13,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
@@ -28,6 +29,7 @@ import java.util.Map;
 
 import static com.petrotal.ahcbackend.configuration.TokenJwtConfig.*;
 
+@Slf4j
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private final AuthenticationManager authenticationManager;
@@ -57,7 +59,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         org.springframework.security.core.userdetails.User principal = (org.springframework.security.core.userdetails.User) authResult.getPrincipal();
 
         User user = userService.findByUsername(principal.getUsername());
-        //Collection<? extends GrantedAuthority> authorities = authResult.getAuthorities();
 
         Claims claims = Jwts.claims()
                 .add("firstName", user.getFirstName())
@@ -79,6 +80,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         response.getWriter().write(new ObjectMapper().writeValueAsString(responseDto));
         response.setContentType(CONTENT_TYPE);
         response.setStatus(200);
+
+        log.info("El usuario {} ha iniciado sesión.", user.getUsername());
     }
 
     @Override
