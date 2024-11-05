@@ -4,6 +4,7 @@ import com.petrotal.ahcbackend.dto.DataDto;
 import com.petrotal.ahcbackend.dto.ResponseDto;
 import com.petrotal.ahcbackend.mapper.DataMapper;
 import com.petrotal.ahcbackend.service.data.DataAccessService;
+import com.petrotal.ahcbackend.service.report.ReportGenerator;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 public class DataController {
     private final DataAccessService dataAccessService;
     private final DataMapper dataMapper;
+    private final ReportGenerator reportGenerator;
 
     @PostMapping("/save")
     @PreAuthorize("hasAuthority('REGISTER')")
@@ -84,5 +86,15 @@ public class DataController {
                         true)
                 , HttpStatus.OK
         );
+    }
+
+    @GetMapping("/report/{voucherNumber}")
+    @PreAuthorize("hasAuthority('REGISTER')")
+    public ResponseEntity<ResponseDto> getReport(@PathVariable String voucherNumber) {
+        return new ResponseEntity<>(
+                new ResponseDto(
+                        reportGenerator.generateReport(voucherNumber),
+                        true)
+                , HttpStatus.OK);
     }
 }

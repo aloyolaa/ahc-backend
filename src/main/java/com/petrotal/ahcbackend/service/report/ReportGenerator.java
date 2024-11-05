@@ -31,26 +31,32 @@ public class ReportGenerator {
             Resource logo = resourceLoader
                     .getResource("classpath:static/images/logo.png");
 
-            //JRBeanCollectionDataSource arDataSource = new JRBeanCollectionDataSource(getAnnualStatistics(arStatistics.annualConsumption(), arStatistics.annualConsumptionLastYear()));
+            Resource signature = resourceLoader
+                    .getResource("classpath:static/images/firma.svg");
 
             Map<String, Object> reportParameters = new HashMap<>();
+
 
             reportParameters.put("logo", logo.getInputStream());
 
             reportParameters.put("voucherNumber", data.getVoucherNumber());
             reportParameters.put("dispatchDate", data.getDispatchDate().toString());
             reportParameters.put("materialStatus", data.getMaterialStatus());
-            //reportParameters.put("usageDetail", data.getUsageDetail());
+            reportParameters.put("usageDetail", data.getUsageDetail());
             reportParameters.put("observations", data.getObservations());
             reportParameters.put("area", data.getArea().getName());
             reportParameters.put("contractor", data.getContractor().getName());
             reportParameters.put("equipment", data.getEquipment().getName());
-
+            reportParameters.put("ds", new JRBeanCollectionDataSource(data.getDataDetails()));
             /*reportParameters.put("signature01", signatoryService.getByUser(data.getDataSignatories().get(0).getUser().getUsername()));
             reportParameters.put("signature02", signatoryService.getByUser(data.getDataSignatories().get(1).getUser().getUsername()));
             reportParameters.put("signature03", signatoryService.getByUser(data.getDataSignatories().get(2).getUser().getUsername()));
             reportParameters.put("signature04", signatoryService.getByUser(data.getDataSignatories().get(3).getUser().getUsername()));*/
 
+            /*reportParameters.put("signature01", signature.getInputStream());
+            reportParameters.put("signature02", signature.getInputStream());
+            reportParameters.put("signature03", signature.getInputStream());
+            reportParameters.put("signature04", signature.getInputStream());*/
 
             JasperReport report = (JasperReport) JRLoader.loadObject(reportFile.getInputStream());
 
