@@ -61,13 +61,13 @@ public class DataController {
         );
     }
 
-    @GetMapping("/cancel/{voucherNumber}")
+    @GetMapping("/cancel/{id}")
     @PreAuthorize("hasAuthority('REGISTER')")
-    public ResponseEntity<ResponseDto> cancelVoucher(@PathVariable String voucherNumber) {
-        dataAccessService.cancelVoucher(voucherNumber);
+    public ResponseEntity<ResponseDto> cancelVoucher(@PathVariable Long id) {
+        dataAccessService.cancelVoucher(id);
         return new ResponseEntity<>(
                 new ResponseDto(
-                        "Voucher " + voucherNumber + " ha sido anulado.",
+                        "Voucher anulado.",
                         true)
                 , HttpStatus.OK
         );

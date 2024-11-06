@@ -23,5 +23,7 @@ public interface DataAccessService {
 
     List<DataListDto> findBySignatory();
 
-    void cancelVoucher(String voucherNumber);
+    void cancelVoucher(Long id);
+
+    void sign(Long voucherId);
 }
