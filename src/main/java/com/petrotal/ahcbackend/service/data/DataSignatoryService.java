@@ -1,7 +1,11 @@
 package com.petrotal.ahcbackend.service.data;
 
+import com.petrotal.ahcbackend.entity.DataSignatory;
+
 public interface DataSignatoryService {
-    void sign(Long voucherId);
+    void save(DataSignatory dataSignatory);
 
     long countSignatories(Long voucherId);
+
+    long countByDataIdAndUserRoleName(Long voucherId);
 }
