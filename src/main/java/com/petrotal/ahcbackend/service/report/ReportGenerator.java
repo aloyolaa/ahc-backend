@@ -1,6 +1,7 @@
 package com.petrotal.ahcbackend.service.report;
 
 import com.petrotal.ahcbackend.entity.Data;
+import com.petrotal.ahcbackend.exception.DataAccessExceptionImpl;
 import com.petrotal.ahcbackend.exception.ReportGeneratorException;
 import com.petrotal.ahcbackend.service.data.DataAccessService;
 import com.petrotal.ahcbackend.service.data.SignatoryService;
@@ -25,17 +26,17 @@ public class ReportGenerator {
         try {
             Data data = dataAccessService.findByVoucherNumber(voucherNumber);
 
+            if (!data.getStatus().equals("APROBADO")) {
+                throw new DataAccessExceptionImpl("El vale no tiene todas las firmas necesarias para aprobación.");
+            }
+
             Resource reportFile = resourceLoader
                     .getResource("classpath:templates/report/FuelVoucher.jasper");
 
             Resource logo = resourceLoader
                     .getResource("classpath:static/images/logo.png");
 
-            Resource signature = resourceLoader
-                    .getResource("classpath:static/images/firma.svg");
-
             Map<String, Object> reportParameters = new HashMap<>();
-
 
             reportParameters.put("logo", logo.getInputStream());
 
@@ -47,16 +48,13 @@ public class ReportGenerator {
             reportParameters.put("area", data.getArea().getName());
             reportParameters.put("contractor", data.getContractor().getName());
             reportParameters.put("equipment", data.getEquipment().getName());
-            reportParameters.put("ds", new JRBeanCollectionDataSource(data.getDataDetails()));
-            /*reportParameters.put("signature01", signatoryService.getByUser(data.getDataSignatories().get(0).getUser().getUsername()));
-            reportParameters.put("signature02", signatoryService.getByUser(data.getDataSignatories().get(1).getUser().getUsername()));
-            reportParameters.put("signature03", signatoryService.getByUser(data.getDataSignatories().get(2).getUser().getUsername()));
-            reportParameters.put("signature04", signatoryService.getByUser(data.getDataSignatories().get(3).getUser().getUsername()));*/
 
-            /*reportParameters.put("signature01", signature.getInputStream());
-            reportParameters.put("signature02", signature.getInputStream());
-            reportParameters.put("signature03", signature.getInputStream());
-            reportParameters.put("signature04", signature.getInputStream());*/
+            reportParameters.put("ds", new JRBeanCollectionDataSource(data.getDataDetails()));
+
+            reportParameters.put("signature01", getSignatory(data, "FIELD_MANAGER"));
+            reportParameters.put("signature02", getSignatory(data, "LOGISTICS_COORDINATOR"));
+            reportParameters.put("signature03", getSignatory(data, "PRODUCTION_SUPERINTENDENT"));
+            reportParameters.put("signature04", getSignatory(data, "STORE"));
 
             JasperReport report = (JasperReport) JRLoader.loadObject(reportFile.getInputStream());
 
@@ -68,5 +66,15 @@ public class ReportGenerator {
         } catch (Exception e) {
             throw new ReportGeneratorException("No se puedo generar el reporte. Inténtelo más tarde." + e.getMessage());
         }
+    }
+
+    private String getSignatory(Data data, String roleName) {
+        return signatoryService.getByUser(
+                data.getDataSignatories()
+                        .stream()
+                        .filter(ds -> ds.getUser().getRole().getName().equals(roleName))
+                        .findAny().orElseThrow()
+                        .getUser().getUsername()
+        ).signatureFile();
     }
 }
