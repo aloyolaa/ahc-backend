@@ -23,13 +23,6 @@ public interface DataRepository extends JpaRepository<Data, Long> {
     @Query("select MAX(d.voucherNumber) from Data d")
     Integer findByVoucherNumberNotNullOrderByVoucherNumberDesc();
 
-    /*@Query("""
-            select d from Data d inner join d.dataSignatories dataSignatories
-            where dataSignatories.user.username = ?1
-            and dataSignatories.isSigned = FALSE
-            order by d.dispatchDate DESC""")
-    List<Data> findByDataSignatoriesUserIdOrderByDispatchDateDesc(String username);*/
-
     @Query("""
             select d from Data d
             where d.status = 'PENDIENTE'
@@ -45,8 +38,6 @@ public interface DataRepository extends JpaRepository<Data, Long> {
 
     @Transactional
     @Modifying
-    @Query("update Data d set d.status = 'CANCELADO' where d.voucherNumber = ?1")
-    void updateStatusByVoucherNumber(String voucherNumber);
-
-
+    @Query("update Data d set d.status = ?1 where d.id = ?2")
+    void updateStatusByVoucherId(String status, Long id);
 }
