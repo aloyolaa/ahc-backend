@@ -12,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+
 @RestController
 @RequestMapping("/data")
 @RequiredArgsConstructor
@@ -65,13 +67,13 @@ public class DataController {
         );
     }
 
-    @GetMapping("/cancel/{voucherNumber}")
+    @GetMapping("/cancel/{id}")
     @PreAuthorize("hasAuthority('REGISTER')")
-    public ResponseEntity<ResponseDto> cancelVoucher(@PathVariable String voucherNumber) {
-        dataAccessService.cancelVoucher(voucherNumber);
+    public ResponseEntity<ResponseDto> cancelVoucher(@PathVariable Long id) {
+        dataAccessService.cancelVoucher(id);
         return new ResponseEntity<>(
                 new ResponseDto(
-                        "Voucher " + voucherNumber + " ha sido anulado.",
+                        "Voucher anulado.",
                         true)
                 , HttpStatus.OK
         );
@@ -96,5 +98,16 @@ public class DataController {
                         reportGenerator.generateReport(voucherNumber),
                         true)
                 , HttpStatus.OK);
+    }
+
+    @GetMapping("/filter/{areaId}/{contractorId}/{startDate}/{endDate}/{status}")
+    @PreAuthorize("hasAuthority('REGISTER')")
+    public ResponseEntity<ResponseDto> getByFilter(@PathVariable Long areaId, @PathVariable Long contractorId, @PathVariable LocalDate startDate, @PathVariable LocalDate endDate, @PathVariable String status) {
+        return new ResponseEntity<>(
+                new ResponseDto(
+                        dataAccessService.findByFilter(areaId, contractorId, startDate, endDate, status),
+                        true)
+                , HttpStatus.OK
+        );
     }
 }

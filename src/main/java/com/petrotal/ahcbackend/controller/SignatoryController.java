@@ -1,6 +1,7 @@
 package com.petrotal.ahcbackend.controller;
 
 import com.petrotal.ahcbackend.dto.ResponseDto;
+import com.petrotal.ahcbackend.service.data.DataAccessService;
 import com.petrotal.ahcbackend.service.data.DataSignatoryService;
 import com.petrotal.ahcbackend.service.data.SignatoryService;
 import com.petrotal.ahcbackend.service.security.UserService;
@@ -18,6 +19,7 @@ public class SignatoryController {
     private final SignatoryService signatoryService;
     private final UserService userService;
     private final DataSignatoryService dataSignatoryService;
+    private final DataAccessService dataAccessService;
 
     @PostMapping("/save")
     @PreAuthorize("hasAnyAuthority('FIELD_MANAGER', 'LOGISTICS_COORDINATOR', 'PRODUCTION_SUPERINTENDENT', 'STORE')")
@@ -54,7 +56,7 @@ public class SignatoryController {
     @GetMapping("/sign/{voucherId}")
     @PreAuthorize("hasAnyAuthority('FIELD_MANAGER', 'LOGISTICS_COORDINATOR', 'PRODUCTION_SUPERINTENDENT', 'STORE')")
     public ResponseEntity<ResponseDto> sign(@PathVariable Long voucherId) {
-        dataSignatoryService.sign(voucherId);
+        dataAccessService.sign(voucherId);
         return new ResponseEntity<>(
                 new ResponseDto(
                         "Voucher firmado correctamente",

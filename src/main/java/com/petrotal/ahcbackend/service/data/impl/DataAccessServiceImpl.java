@@ -3,6 +3,7 @@ package com.petrotal.ahcbackend.service.data.impl;
 import com.petrotal.ahcbackend.dto.DataDto;
 import com.petrotal.ahcbackend.dto.DataListDto;
 import com.petrotal.ahcbackend.entity.Data;
+import com.petrotal.ahcbackend.entity.DataSignatory;
 import com.petrotal.ahcbackend.entity.User;
 import com.petrotal.ahcbackend.exception.DataAccessExceptionImpl;
 import com.petrotal.ahcbackend.exception.ModifiedDataException;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionException;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -26,12 +28,23 @@ public class DataAccessServiceImpl implements DataAccessService {
     private final DataMapper dataMapper;
     private final DataSignatoryService dataSignatoryService;
     private final UserService userService;
+    private final SignatoryService signatoryService;
 
     @Override
     @Transactional(readOnly = true)
     public List<Data> findByYear(Integer year) {
         try {
             return dataRepository.findByYear(year - 1);
+        } catch (DataAccessException | TransactionException e) {
+            throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde.");
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<DataListDto> findByFilter(Long areaId, Long contractorId, LocalDate dispatchDateStart, LocalDate dispatchDateEnd, String status) {
+        try {
+            return dataMapper.toDataListDtos(dataRepository.findByAreaAndContractorAndDispatchDateBetweenAndStatus(areaId, contractorId, dispatchDateStart, dispatchDateEnd, status));
         } catch (DataAccessException | TransactionException e) {
             throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde.");
         }
@@ -125,16 +138,42 @@ public class DataAccessServiceImpl implements DataAccessService {
 
     @Override
     @Transactional
-    public void cancelVoucher(String voucherNumber) {
+    public void cancelVoucher(Long id) {
         try {
-            if (!dataRepository.existsByVoucherNumber(voucherNumber)) {
-                throw new EntityNotFoundException("Voucher con el número " + voucherNumber + " no existe.");
+            if (!dataRepository.existsById(id)) {
+                throw new EntityNotFoundException("Voucher con el ID " + id + " no existe.");
             }
 
-            dataRepository.updateStatusByVoucherNumber(voucherNumber);
+            dataRepository.updateStatusByVoucherId("CANCELADO", id);
         } catch (DataAccessException | TransactionException e) {
             throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde.");
         }
 
+    }
+
+    @Override
+    @Transactional
+    public void sign(Long voucherId) {
+        User user = userService.findByUsername(userService.getUsernameFromSecurityContext());
+
+        DataSignatory dataSignatory = new DataSignatory();
+        Data data = new Data();
+        data.setId(voucherId);
+        dataSignatory.setData(data);
+        dataSignatory.setUser(user);
+
+        try {
+            if (Boolean.FALSE.equals(signatoryService.existsByUser(user.getId()))) {
+                throw new EntityNotFoundException("Usted no tiene una firma registrada.");
+            }
+
+            dataSignatoryService.save(dataSignatory);
+
+            if (dataSignatoryService.countByDataIdAndUserRoleName(voucherId) == 4) {
+                dataRepository.updateStatusByVoucherId("APROBADO", voucherId);
+            }
+        } catch (DataAccessException | TransactionException e) {
+            throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde.");
+        }
     }
 }

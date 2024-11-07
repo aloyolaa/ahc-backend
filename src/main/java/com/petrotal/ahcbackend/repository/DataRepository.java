@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,13 +24,6 @@ public interface DataRepository extends JpaRepository<Data, Long> {
     @Query("select MAX(d.voucherNumber) from Data d")
     Integer findByVoucherNumberNotNullOrderByVoucherNumberDesc();
 
-    /*@Query("""
-            select d from Data d inner join d.dataSignatories dataSignatories
-            where dataSignatories.user.username = ?1
-            and dataSignatories.isSigned = FALSE
-            order by d.dispatchDate DESC""")
-    List<Data> findByDataSignatoriesUserIdOrderByDispatchDateDesc(String username);*/
-
     @Query("""
             select d from Data d
             where d.status = 'PENDIENTE'
@@ -45,8 +39,13 @@ public interface DataRepository extends JpaRepository<Data, Long> {
 
     @Transactional
     @Modifying
-    @Query("update Data d set d.status = 'CANCELADO' where d.voucherNumber = ?1")
-    void updateStatusByVoucherNumber(String voucherNumber);
+    @Query("update Data d set d.status = ?1 where d.id = ?2")
+    void updateStatusByVoucherId(String status, Long id);
+
+    @Query("""
+            select d from Data d
+            where d.area.id = ?1 and d.contractor.id = ?2 and d.dispatchDate between ?3 and ?4 and upper(d.status) = upper(?5)""")
+    List<Data> findByAreaAndContractorAndDispatchDateBetweenAndStatus(Long areaId, Long contractorId, LocalDate dispatchDateStart, LocalDate dispatchDateEnd, String status);
 
 
 }

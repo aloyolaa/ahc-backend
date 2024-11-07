@@ -4,10 +4,13 @@ import com.petrotal.ahcbackend.dto.DataDto;
 import com.petrotal.ahcbackend.dto.DataListDto;
 import com.petrotal.ahcbackend.entity.Data;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface DataAccessService {
     List<Data> findByYear(Integer year);
+
+    List<DataListDto> findByFilter(Long areaId, Long contractorId, LocalDate dispatchDateStart, LocalDate dispatchDateEnd, String status);
 
     Data findById(Long id);
 
@@ -23,5 +26,7 @@ public interface DataAccessService {
 
     List<DataListDto> findBySignatory();
 
-    void cancelVoucher(String voucherNumber);
+    void cancelVoucher(Long id);
+
+    void sign(Long voucherId);
 }
