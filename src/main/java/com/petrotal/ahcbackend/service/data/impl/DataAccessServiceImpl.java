@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionException;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -41,6 +42,16 @@ public class DataAccessServiceImpl implements DataAccessService {
 
     @Override
     @Transactional(readOnly = true)
+    public List<DataListDto> findByFilter(Long areaId, Long contractorId, LocalDate dispatchDateStart, LocalDate dispatchDateEnd, String status) {
+        try {
+            return dataMapper.toDataListDtos(dataRepository.findByAreaAndContractorAndDispatchDateBetweenAndStatus(areaId, contractorId, dispatchDateStart, dispatchDateEnd, status));
+        } catch (DataAccessException | TransactionException e) {
+            throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde.");
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public Data findById(Long id) {
         try {
             return dataRepository.findById(id)
@@ -52,10 +63,10 @@ public class DataAccessServiceImpl implements DataAccessService {
 
     @Override
     @Transactional(readOnly = true)
-    public DataDto findByVoucherNumber(String voucherNumber) {
+    public Data findByVoucherNumber(String voucherNumber) {
         try {
-            return dataMapper.toDataDto(dataRepository.findByVoucherNumber(voucherNumber)
-                    .orElseThrow(() -> new EntityNotFoundException("Voucher con el número " + voucherNumber + " no existe.")));
+            return dataRepository.findByVoucherNumber(voucherNumber)
+                    .orElseThrow(() -> new EntityNotFoundException("Voucher con el número " + voucherNumber + " no existe."));
         } catch (DataAccessException | TransactionException e) {
             throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde.");
         }

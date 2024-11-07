@@ -4,6 +4,7 @@ import com.petrotal.ahcbackend.exception.FileStorageException;
 import com.petrotal.ahcbackend.service.data.FileStorageService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -36,6 +37,7 @@ public class FtpFileStorageServiceImpl implements FileStorageService {
             FTPClient ftpClient = new FTPClient();
             ftpClient.connect(ftpHost);
             ftpClient.login(ftpUsername, ftpPassword);
+            ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
             ftpClient.enterLocalPassiveMode();
             ftpClient.changeWorkingDirectory(ftpRemoteDir);
             try (InputStream inputStream = file.getInputStream()) {
@@ -54,6 +56,7 @@ public class FtpFileStorageServiceImpl implements FileStorageService {
             FTPClient ftpClient = new FTPClient();
             ftpClient.connect(ftpHost);
             ftpClient.login(ftpUsername, ftpPassword);
+            ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
             ftpClient.enterLocalPassiveMode();
             ftpClient.changeWorkingDirectory(ftpRemoteDir);
 
@@ -74,6 +77,7 @@ public class FtpFileStorageServiceImpl implements FileStorageService {
             FTPClient ftpClient = new FTPClient();
             ftpClient.connect(ftpHost);
             ftpClient.login(ftpUsername, ftpPassword);
+            ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
             ftpClient.enterLocalPassiveMode();
             ftpClient.changeWorkingDirectory(ftpRemoteDir);
             ftpClient.deleteFile(fileName);

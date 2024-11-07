@@ -2,7 +2,9 @@ package com.petrotal.ahcbackend.controller;
 
 import com.petrotal.ahcbackend.dto.DataDto;
 import com.petrotal.ahcbackend.dto.ResponseDto;
+import com.petrotal.ahcbackend.mapper.DataMapper;
 import com.petrotal.ahcbackend.service.data.DataAccessService;
+import com.petrotal.ahcbackend.service.report.ReportGenerator;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -10,11 +12,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+
 @RestController
 @RequestMapping("/data")
 @RequiredArgsConstructor
 public class DataController {
     private final DataAccessService dataAccessService;
+    private final DataMapper dataMapper;
+    private final ReportGenerator reportGenerator;
 
     @PostMapping("/save")
     @PreAuthorize("hasAuthority('REGISTER')")
@@ -33,7 +39,7 @@ public class DataController {
     public ResponseEntity<ResponseDto> getByVoucherNumber(@PathVariable String voucherNumber) {
         return new ResponseEntity<>(
                 new ResponseDto(
-                        dataAccessService.findByVoucherNumber(voucherNumber),
+                        dataMapper.toDataDto(dataAccessService.findByVoucherNumber(voucherNumber)),
                         true)
                 , HttpStatus.OK
         );
@@ -79,6 +85,27 @@ public class DataController {
         return new ResponseEntity<>(
                 new ResponseDto(
                         dataAccessService.findBySignatory().size(),
+                        true)
+                , HttpStatus.OK
+        );
+    }
+
+    @GetMapping("/report/{voucherNumber}")
+    @PreAuthorize("hasAuthority('REGISTER')")
+    public ResponseEntity<ResponseDto> getReport(@PathVariable String voucherNumber) {
+        return new ResponseEntity<>(
+                new ResponseDto(
+                        reportGenerator.generateReport(voucherNumber),
+                        true)
+                , HttpStatus.OK);
+    }
+
+    @GetMapping("/filter/{areaId}/{contractorId}/{startDate}/{endDate}/{status}")
+    @PreAuthorize("hasAuthority('REGISTER')")
+    public ResponseEntity<ResponseDto> getByFilter(@PathVariable Long areaId, @PathVariable Long contractorId, @PathVariable LocalDate startDate, @PathVariable LocalDate endDate, @PathVariable String status) {
+        return new ResponseEntity<>(
+                new ResponseDto(
+                        dataAccessService.findByFilter(areaId, contractorId, startDate, endDate, status),
                         true)
                 , HttpStatus.OK
         );

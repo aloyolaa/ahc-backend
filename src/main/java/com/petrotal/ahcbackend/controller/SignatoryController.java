@@ -4,6 +4,7 @@ import com.petrotal.ahcbackend.dto.ResponseDto;
 import com.petrotal.ahcbackend.service.data.DataAccessService;
 import com.petrotal.ahcbackend.service.data.DataSignatoryService;
 import com.petrotal.ahcbackend.service.data.SignatoryService;
+import com.petrotal.ahcbackend.service.security.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 public class SignatoryController {
     private final SignatoryService signatoryService;
+    private final UserService userService;
     private final DataSignatoryService dataSignatoryService;
     private final DataAccessService dataAccessService;
 
@@ -35,7 +37,7 @@ public class SignatoryController {
     public ResponseEntity<ResponseDto> getByUser() {
         return new ResponseEntity<>(
                 new ResponseDto(
-                        signatoryService.getByUser(),
+                        signatoryService.getByUser(userService.getUsernameFromSecurityContext()),
                         true)
                 , HttpStatus.OK);
     }
