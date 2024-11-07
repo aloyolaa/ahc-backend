@@ -107,4 +107,34 @@ public class ExceptionController {
                         false)
                 , HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+    @ExceptionHandler(UserAuthenticationException.class)
+    public ResponseEntity<ResponseDto> userAuthenticationException(UserAuthenticationException e) {
+        String errorMessage = "UserAuthenticationException: " + e.getMessage();
+
+        log.error(errorMessage);
+
+        ErrorResponse errorResponse = new ErrorResponse("Error en el Proceso de Autenticación", e.getMessage());
+
+        return new ResponseEntity<>(
+                new ResponseDto(
+                        errorResponse,
+                        false)
+                , HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(ReportGeneratorException.class)
+    public ResponseEntity<ResponseDto> reportGeneratorException(ReportGeneratorException e) {
+        String errorMessage = "ReportGeneratorException: " + e.getMessage();
+
+        log.error(errorMessage);
+
+        ErrorResponse errorResponse = new ErrorResponse("Error de Acceso", e.getMessage());
+
+        return new ResponseEntity<>(
+                new ResponseDto(
+                        errorResponse,
+                        false)
+                , HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 }

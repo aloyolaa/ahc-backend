@@ -63,10 +63,10 @@ public class DataAccessServiceImpl implements DataAccessService {
 
     @Override
     @Transactional(readOnly = true)
-    public DataDto findByVoucherNumber(String voucherNumber) {
+    public Data findByVoucherNumber(String voucherNumber) {
         try {
-            return dataMapper.toDataDto(dataRepository.findByVoucherNumber(voucherNumber)
-                    .orElseThrow(() -> new EntityNotFoundException("Voucher con el número " + voucherNumber + " no existe.")));
+            return dataRepository.findByVoucherNumber(voucherNumber)
+                    .orElseThrow(() -> new EntityNotFoundException("Voucher con el número " + voucherNumber + " no existe."));
         } catch (DataAccessException | TransactionException e) {
             throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde.");
         }

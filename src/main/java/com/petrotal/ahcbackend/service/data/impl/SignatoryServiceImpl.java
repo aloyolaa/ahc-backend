@@ -42,8 +42,7 @@ public class SignatoryServiceImpl implements SignatoryService {
 
     @Override
     @Transactional(readOnly = true)
-    public SignatoryDto getByUser() {
-        String username = userService.getUsernameFromSecurityContext();
+    public SignatoryDto getByUser(String username) {
         User user = userService.findByUsername(username);
 
         try {
