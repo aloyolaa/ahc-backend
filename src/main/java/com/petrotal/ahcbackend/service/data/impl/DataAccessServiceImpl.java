@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionException;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -34,6 +35,16 @@ public class DataAccessServiceImpl implements DataAccessService {
     public List<Data> findByYear(Integer year) {
         try {
             return dataRepository.findByYear(year - 1);
+        } catch (DataAccessException | TransactionException e) {
+            throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde.");
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<DataListDto> findByFilter(Long areaId, Long contractorId, LocalDate dispatchDateStart, LocalDate dispatchDateEnd, String status) {
+        try {
+            return dataMapper.toDataListDtos(dataRepository.findByAreaAndContractorAndDispatchDateBetweenAndStatus(areaId, contractorId, dispatchDateStart, dispatchDateEnd, status));
         } catch (DataAccessException | TransactionException e) {
             throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde.");
         }
