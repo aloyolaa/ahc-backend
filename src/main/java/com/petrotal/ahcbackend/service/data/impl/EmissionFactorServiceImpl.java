@@ -28,7 +28,7 @@ public class EmissionFactorServiceImpl implements EmissionFactorService {
         try {
             return gasMapper.toGasDto(
                     emissionFactorRepository.findByYear(year, fuelType.toUpperCase(), consumptionType.toUpperCase())
-                            .orElseThrow(() -> new EntityNotFoundException("No existen datos sobre Factores de Emisión para el año " + year + " " + fuelType + " " + consumptionType))
+                            .orElseThrow(() -> new EntityNotFoundException("No existen datos sobre Factores de Emisión para " + fuelType + " y " + consumptionType))
             );
         } catch (DataAccessException | TransactionException e) {
             throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde.");

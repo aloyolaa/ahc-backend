@@ -64,7 +64,7 @@ public class ReportGenerator {
 
             return Base64.getEncoder().encodeToString(reportPdf);
         } catch (Exception e) {
-            throw new ReportGeneratorException("No se puedo generar el reporte. Inténtelo más tarde." + e.getMessage());
+            throw new ReportGeneratorException("No se puedo generar el reporte. Inténtelo más tarde.");
         }
     }
 

@@ -28,7 +28,7 @@ public class ExceptionController {
         });
         String errorMessage = "MethodArgumentNotValidException: Datos no válidos.";
         log.error(errorMessage);
-        ErrorResponse errorResponse = new ErrorResponse("Error al Guardar Datos", errors);
+        ErrorResponse errorResponse = new ErrorResponse("Datos no válidos", errors);
         return new ResponseEntity<>(
                 new ResponseDto(
                         errorResponse,

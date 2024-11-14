@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Base64;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +27,30 @@ public class SignatoryServiceImpl implements SignatoryService {
     private final FileStorageService fileStorageService;
 
     @Override
+    @Transactional
+    public void save(MultipartFile signatureFile) {
+        User user = userService.findByUsername(userService.getUsernameFromSecurityContext());
+        Optional<Signatory> optionalSignatory = signatoryRepository.findByUserId(user.getId());
+
+        Signatory signatory;
+        String signaturePath = fileStorageService.storeFile(signatureFile);
+
+        if (optionalSignatory.isPresent()) {
+            // Actualizar firma existente
+            signatory = optionalSignatory.orElseThrow();
+            String previousSignature = signatory.getSignature();
+            signatory.setSignature(signaturePath);
+            fileStorageService.deleteFile(previousSignature);
+        } else {
+            signatory = new Signatory();
+            signatory.setSignature(signaturePath);
+            signatory.setUser(user);
+        }
+
+        signatoryRepository.save(signatory);
+    }
+
+    /*@Override
     @Transactional
     public void save(MultipartFile signatureFile) {
         User user = userService.findByUsername(userService.getUsernameFromSecurityContext());
@@ -39,6 +64,18 @@ public class SignatoryServiceImpl implements SignatoryService {
         signatory.setUser(user);
         signatoryRepository.save(signatory);
     }
+
+    @Override
+    @Transactional
+    public void update(MultipartFile signatureFile) {
+        User user = userService.findByUsername(userService.getUsernameFromSecurityContext());
+        Signatory signatory = signatoryRepository.findByUserId(user.getId()).orElseThrow(() -> new EntityNotFoundException("El usuario con el username " + user.getUsername() + " no tiene una firma asignada."));
+        String previousSignature = signatory.getSignature();
+        String signaturePath = fileStorageService.storeFile(signatureFile);
+        signatory.setSignature(signaturePath);
+        fileStorageService.deleteFile(previousSignature);
+        signatoryRepository.save(signatory);
+    }*/
 
     @Override
     @Transactional(readOnly = true)
@@ -60,17 +97,5 @@ public class SignatoryServiceImpl implements SignatoryService {
     @Transactional(readOnly = true)
     public Boolean existsByUser(Long userId) {
         return signatoryRepository.existsByUser_Id(userId);
-    }
-
-    @Override
-    @Transactional
-    public void update(MultipartFile signatureFile) {
-        User user = userService.findByUsername(userService.getUsernameFromSecurityContext());
-        Signatory signatory = signatoryRepository.findByUserId(user.getId()).orElseThrow(() -> new EntityNotFoundException("El usuario con el username " + user.getUsername() + " no tiene una firma asignada."));
-        String previousSignature = signatory.getSignature();
-        String signaturePath = fileStorageService.storeFile(signatureFile);
-        signatory.setSignature(signaturePath);
-        fileStorageService.deleteFile(previousSignature);
-        signatoryRepository.save(signatory);
     }
 }

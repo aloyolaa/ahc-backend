@@ -28,7 +28,7 @@ public class GlobalWarmingPotentialServiceImpl implements GlobalWarmingPotential
         try {
             return gasMapper.toGasDto(
                     globalWarmingPotentialRepository.findByYear(year)
-                            .orElseThrow(() -> new EntityNotFoundException("No existen datos sobre Potenciales de Calentamiento Global para el año " + year))
+                            .orElseThrow(() -> new EntityNotFoundException("No existen datos sobre Potenciales de Calentamiento Global"))
             );
         } catch (DataAccessException | TransactionException e) {
             throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde.");
