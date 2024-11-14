@@ -55,7 +55,7 @@ public class DataAccessServiceImpl implements DataAccessService {
     public Data findById(Long id) {
         try {
             return dataRepository.findById(id)
-                    .orElseThrow(() -> new EntityNotFoundException("Voucher con el ID " + id + " no existe."));
+                    .orElseThrow(() -> new EntityNotFoundException("Vale con el ID " + id + " no existe."));
         } catch (DataAccessException | TransactionException e) {
             throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde.");
         }
@@ -66,7 +66,7 @@ public class DataAccessServiceImpl implements DataAccessService {
     public Data findByVoucherNumber(String voucherNumber) {
         try {
             return dataRepository.findByVoucherNumber(voucherNumber)
-                    .orElseThrow(() -> new EntityNotFoundException("Voucher con el número " + voucherNumber + " no existe."));
+                    .orElseThrow(() -> new EntityNotFoundException("Vale con el número " + voucherNumber + " no existe."));
         } catch (DataAccessException | TransactionException e) {
             throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde.");
         }
@@ -82,7 +82,7 @@ public class DataAccessServiceImpl implements DataAccessService {
             data.setEquipment(equipmentService.findById(data.getEquipment().getId()));*/
 
             if (data.getId() != null && dataSignatoryService.countSignatories(data.getId()) > 0) {
-                throw new ModifiedDataException("El Voucher con el ID " + data.getId() + " ya tiene firmas y no se puede modificar.");
+                throw new ModifiedDataException("El Vale con el número " + data.getVoucherNumber() + " ya tiene firmas y no se puede modificar.");
             }
 
             data.setStatus("PENDIENTE");
@@ -141,7 +141,7 @@ public class DataAccessServiceImpl implements DataAccessService {
     public void cancelVoucher(Long id) {
         try {
             if (!dataRepository.existsById(id)) {
-                throw new EntityNotFoundException("Voucher con el ID " + id + " no existe.");
+                throw new EntityNotFoundException("Vale con el ID " + id + " no existe.");
             }
 
             dataRepository.updateStatusByVoucherId("CANCELADO", id);

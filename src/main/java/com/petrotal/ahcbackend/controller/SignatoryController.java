@@ -42,7 +42,7 @@ public class SignatoryController {
                 , HttpStatus.OK);
     }
 
-    @PutMapping("/update")
+    /*@PutMapping("/update")
     @PreAuthorize("hasAnyAuthority('FIELD_MANAGER', 'LOGISTICS_COORDINATOR', 'PRODUCTION_SUPERINTENDENT', 'STORE')")
     public ResponseEntity<ResponseDto> update(@RequestParam MultipartFile signatureFile) {
         signatoryService.update(signatureFile);
@@ -51,7 +51,7 @@ public class SignatoryController {
                         "Firma registrada correctamente.",
                         true)
                 , HttpStatus.OK);
-    }
+    }*/
 
     @GetMapping("/sign/{voucherId}")
     @PreAuthorize("hasAnyAuthority('FIELD_MANAGER', 'LOGISTICS_COORDINATOR', 'PRODUCTION_SUPERINTENDENT', 'STORE')")
