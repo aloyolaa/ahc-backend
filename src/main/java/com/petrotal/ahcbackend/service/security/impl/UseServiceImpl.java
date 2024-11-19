@@ -78,12 +78,28 @@ public class UseServiceImpl implements UserService {
     @Override
     @Transactional
     public User save(UserRegisterDto userRegisterDto) {
-        if (userRepository.existsByUsernameIgnoreCase(userRegisterDto.username())) {
-            throw new DataAccessExceptionImpl("Ya existe un usuario con el username " + userRegisterDto.username() + ".");
-        }
-
         User user = userMapper.toUser(userRegisterDto);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Boolean existsByUsername(String username) {
+        try {
+            return userRepository.existsByUsernameIgnoreCase(username);
+        } catch (DataAccessException | TransactionException e) {
+            throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde.");
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Boolean existsByEmail(String email) {
+        try {
+            return userRepository.existsByEmailIgnoreCase(email);
+        } catch (DataAccessException | TransactionException e) {
+            throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde.");
+        }
     }
 }

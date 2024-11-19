@@ -3,6 +3,7 @@ package com.petrotal.ahcbackend.controller;
 import com.petrotal.ahcbackend.dto.ResponseDto;
 import com.petrotal.ahcbackend.dto.UserRegisterDto;
 import com.petrotal.ahcbackend.service.security.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +18,7 @@ public class UserController {
 
     @PostMapping("/register")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<ResponseDto> register(@RequestBody UserRegisterDto userRegisterDto) {
+    public ResponseEntity<ResponseDto> register(@Valid @RequestBody UserRegisterDto userRegisterDto) {
         userService.save(userRegisterDto);
         return new ResponseEntity<>(
                 new ResponseDto(
