@@ -53,6 +53,7 @@ public class DataDetail {
     private Data data;
 
     public String getFuel() {
-        return description.name();
+        String fuel = description.name();
+        return fuel.equals("GASOLINE") ? "GASOLINA" : fuel;
     }
 }

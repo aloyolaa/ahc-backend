@@ -1,12 +1,15 @@
 package com.petrotal.ahcbackend.dto;
 
+import com.petrotal.ahcbackend.validator.annotation.ExistsByEmail;
+import com.petrotal.ahcbackend.validator.annotation.ExistsByUsername;
+
 public record UserRegisterDto(
-        //TODO validar que el username no se repita
+        @ExistsByUsername
         String username,
         String password,
         String firstName,
         String lastName,
-        //TODO validar que el email no se repita
+        @ExistsByEmail
         String email,
         Integer role
 ) {

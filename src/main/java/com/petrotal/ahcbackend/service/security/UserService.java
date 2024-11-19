@@ -17,4 +17,8 @@ public interface UserService {
     UserSignatoryDto findByRole(String role);
 
     User save(UserRegisterDto userRegisterDto);
+
+    Boolean existsByUsername(String username);
+
+    Boolean existsByEmail(String email);
 }

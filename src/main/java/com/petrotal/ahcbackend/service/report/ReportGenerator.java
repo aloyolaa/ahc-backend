@@ -13,6 +13,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.*;
 
 @Service
@@ -26,8 +27,10 @@ public class ReportGenerator {
         try {
             Data data = dataAccessService.findByVoucherNumber(voucherNumber);
 
-            if (!data.getStatus().equals("APROBADO")) {
+            if (data.getStatus().equals("PENDIENTE")) {
                 throw new DataAccessExceptionImpl("El vale no tiene todas las firmas necesarias para aprobación.");
+            } else if (data.getStatus().equals("CANCELADO")) {
+                throw new DataAccessExceptionImpl("El vale fue cancelado.");
             }
 
             Resource reportFile = resourceLoader
@@ -63,7 +66,7 @@ public class ReportGenerator {
             byte[] reportPdf = JasperExportManager.exportReportToPdf(reportPrint);
 
             return Base64.getEncoder().encodeToString(reportPdf);
-        } catch (Exception e) {
+        } catch (JRException | IOException e) {
             throw new ReportGeneratorException("No se puedo generar el reporte. Inténtelo más tarde.");
         }
     }
