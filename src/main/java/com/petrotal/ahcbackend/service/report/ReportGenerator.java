@@ -27,12 +27,6 @@ public class ReportGenerator {
         try {
             Data data = dataAccessService.findByVoucherNumber(voucherNumber);
 
-            if (data.getStatus().equals("PENDIENTE")) {
-                throw new DataAccessExceptionImpl("El vale no tiene todas las firmas necesarias para aprobación.");
-            } else if (data.getStatus().equals("CANCELADO")) {
-                throw new DataAccessExceptionImpl("El vale fue cancelado.");
-            }
-
             Resource reportFile = resourceLoader
                     .getResource("classpath:templates/report/FuelVoucher.jasper");
 
