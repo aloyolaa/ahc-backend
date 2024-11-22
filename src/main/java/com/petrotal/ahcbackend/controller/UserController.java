@@ -2,6 +2,7 @@ package com.petrotal.ahcbackend.controller;
 
 import com.petrotal.ahcbackend.dto.ResponseDto;
 import com.petrotal.ahcbackend.dto.UserRegisterDto;
+import com.petrotal.ahcbackend.service.security.AccessHistoryService;
 import com.petrotal.ahcbackend.service.security.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
+    private final AccessHistoryService accessHistoryService;
 
     @PostMapping("/register")
     @PreAuthorize("hasAuthority('ADMIN')")
@@ -37,18 +39,13 @@ public class UserController {
                 , HttpStatus.OK);
     }
 
-    /*@GetMapping("/signatories")
-    @PreAuthorize("hasAuthority('REGISTER')")
-    public ResponseEntity<ResponseDto> getSignatories() {
+    @GetMapping("/access-history")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<ResponseDto> getAccessHistory() {
         return new ResponseEntity<>(
                 new ResponseDto(
-                        List.of(
-                                userService.findByRole("FIELD_MANAGER"),
-                                userService.findByRole("LOGISTICS_COORDINATOR"),
-                                userService.findByRole("PRODUCTION_SUPERINTENDENT"),
-                                userService.findByRole("STORE")
-                        ),
+                        accessHistoryService.getAccessHistory(accessHistoryService.getAll()),
                         true)
                 , HttpStatus.OK);
-    }*/
+    }
 }
