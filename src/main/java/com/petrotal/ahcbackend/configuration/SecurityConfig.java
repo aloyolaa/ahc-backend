@@ -2,6 +2,7 @@ package com.petrotal.ahcbackend.configuration;
 
 import com.petrotal.ahcbackend.configuration.filter.JwtAuthenticationFilter;
 import com.petrotal.ahcbackend.configuration.filter.JwtValidationFilter;
+import com.petrotal.ahcbackend.service.security.AccessHistoryService;
 import com.petrotal.ahcbackend.service.security.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -28,6 +29,7 @@ import java.util.Arrays;
 public class SecurityConfig {
     private final AuthenticationConfiguration authenticationConfiguration;
     private final UserService userService;
+    private final AccessHistoryService accessHistoryService;
 
     @Bean
     AuthenticationManager authenticationManager() throws Exception {
@@ -41,7 +43,7 @@ public class SecurityConfig {
                                 .requestMatchers("/carbon-footprint/calculate").permitAll()
                                 .anyRequest().authenticated()
                 )
-                .addFilter(new JwtAuthenticationFilter(authenticationManager(), userService))
+                .addFilter(new JwtAuthenticationFilter(authenticationManager(), userService, accessHistoryService))
                 .addFilter(new JwtValidationFilter(authenticationManager()))
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))

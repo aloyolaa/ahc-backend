@@ -35,7 +35,7 @@ public class DataController {
     }
 
     @GetMapping("/voucher-number/{voucherNumber}")
-    @PreAuthorize("hasAuthority('REGISTER')")
+    @PreAuthorize("hasAnyAuthority('REGISTER', 'FIELD_MANAGER', 'LOGISTICS_COORDINATOR', 'PRODUCTION_SUPERINTENDENT', 'STORE')")
     public ResponseEntity<ResponseDto> getByVoucherNumber(@PathVariable String voucherNumber) {
         return new ResponseEntity<>(
                 new ResponseDto(
