@@ -1,7 +1,7 @@
 package com.petrotal.ahcbackend.service.report;
 
 import com.petrotal.ahcbackend.entity.Data;
-import com.petrotal.ahcbackend.exception.DataAccessExceptionImpl;
+import com.petrotal.ahcbackend.entity.DataSignatory;
 import com.petrotal.ahcbackend.exception.ReportGeneratorException;
 import com.petrotal.ahcbackend.service.data.DataAccessService;
 import com.petrotal.ahcbackend.service.data.SignatoryService;
@@ -61,17 +61,20 @@ public class ReportGenerator {
 
             return Base64.getEncoder().encodeToString(reportPdf);
         } catch (JRException | IOException e) {
-            throw new ReportGeneratorException("No se puedo generar el reporte. Inténtelo más tarde.");
+            throw new ReportGeneratorException("No se puedo generar el reporte. Inténtelo más tarde." + e.getMessage());
         }
     }
 
     private String getSignatory(Data data, String roleName) {
-        return signatoryService.getByUser(
-                data.getDataSignatories()
-                        .stream()
-                        .filter(ds -> ds.getUser().getRole().getName().equals(roleName))
-                        .findAny().orElseThrow()
-                        .getUser().getUsername()
-        ).signatureFile();
+        Optional<DataSignatory> dataSignatory = data.getDataSignatories()
+                .stream()
+                .filter(ds -> ds.getUser().getRole().getName().equals(roleName))
+                .findAny();
+
+        if (dataSignatory.isPresent()) {
+            return signatoryService.getByUser(dataSignatory.orElseThrow().getUser().getUsername()).signatureFile();
+        }
+
+        return "";
     }
 }
