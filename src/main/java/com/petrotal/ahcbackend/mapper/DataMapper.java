@@ -2,6 +2,7 @@ package com.petrotal.ahcbackend.mapper;
 
 import com.petrotal.ahcbackend.dto.DataDto;
 import com.petrotal.ahcbackend.dto.DataListDto;
+import com.petrotal.ahcbackend.dto.DataViewDto;
 import com.petrotal.ahcbackend.dto.UserSignatoryDto;
 import com.petrotal.ahcbackend.entity.Data;
 import com.petrotal.ahcbackend.entity.DataSignatory;
@@ -18,6 +19,13 @@ public interface DataMapper {
     @Mapping(target = "details", source = "dataDetails")
     @Mapping(target = "signatories", source = "dataSignatories")
     DataDto toDataDto(Data data);
+
+    @Mapping(target = "area", source = "area.name")
+    @Mapping(target = "contractor", source = "contractor.name")
+    @Mapping(target = "equipment", source = "equipment.name")
+    @Mapping(target = "details", source = "dataDetails")
+    @Mapping(target = "signatories", source = "dataSignatories")
+    DataViewDto toDataViewDto(Data data);
 
     @Mapping(target = "area.id", source = "area")
     @Mapping(target = "contractor.id", source = "contractor")

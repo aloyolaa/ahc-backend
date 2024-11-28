@@ -10,4 +10,6 @@ public interface AccessHistoryService {
     void save(AccessHistory accessHistory);
 
     String getAccessHistory(List<AccessHistory> histories);
+
+    void logAccessHistory(String username, String action);
 }

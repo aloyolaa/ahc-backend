@@ -3,7 +3,6 @@ package com.petrotal.ahcbackend.configuration.filter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.petrotal.ahcbackend.dto.ErrorResponse;
 import com.petrotal.ahcbackend.dto.ResponseDto;
-import com.petrotal.ahcbackend.entity.AccessHistory;
 import com.petrotal.ahcbackend.entity.User;
 import com.petrotal.ahcbackend.exception.UserAuthenticationException;
 import com.petrotal.ahcbackend.service.security.AccessHistoryService;
@@ -25,7 +24,6 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -84,9 +82,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         response.getWriter().write(new ObjectMapper().writeValueAsString(responseDto));
         response.setContentType(CONTENT_TYPE);
         response.setStatus(200);
-
-        accessHistoryService.save(new AccessHistory(user, LocalDateTime.now()));
-        log.info("El usuario {} ha iniciado sesión.", user.getUsername());
+        accessHistoryService.logAccessHistory(user.getUsername(), "Iniciado Sesión");
     }
 
     @Override

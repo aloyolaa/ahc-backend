@@ -1,7 +1,6 @@
 package com.petrotal.ahcbackend.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -26,8 +25,16 @@ public class AccessHistory {
     @Column(name = "date_access")
     private LocalDateTime dateAccess;
 
-    public AccessHistory(User user, LocalDateTime dateAccess) {
+    @Column(name = "action")
+    private String action;
+
+    public AccessHistory(User user, String action) {
         this.user = user;
-        this.dateAccess = dateAccess;
+        this.action = action;
+    }
+
+    @PrePersist
+    public void prePersist() {
+        this.dateAccess = LocalDateTime.now();
     }
 }
