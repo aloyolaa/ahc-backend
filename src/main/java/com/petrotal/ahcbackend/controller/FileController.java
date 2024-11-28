@@ -3,6 +3,7 @@ package com.petrotal.ahcbackend.controller;
 import com.petrotal.ahcbackend.dto.ResponseDto;
 import com.petrotal.ahcbackend.dto.UploadResponse;
 import com.petrotal.ahcbackend.service.file.FileService;
+import com.petrotal.ahcbackend.service.security.AccessHistoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 public class FileController {
     private final FileService fileService;
+    private final AccessHistoryService accessHistoryService;
 
     @PostMapping("/upload")
     @PreAuthorize("hasAuthority('REGISTER')")
@@ -28,6 +30,8 @@ public class FileController {
                 "Mensaje de Éxito",
                 "Archivo procesado y datos guardados."
         );
+
+        accessHistoryService.logAccessHistory(null, "Subido el Archivo Excel de Datos de Vales");
 
         return new ResponseEntity<>(
                 new ResponseDto(

@@ -1,6 +1,7 @@
 package com.petrotal.ahcbackend.controller;
 
 import com.petrotal.ahcbackend.dto.ResponseDto;
+import com.petrotal.ahcbackend.dto.UserProfileDto;
 import com.petrotal.ahcbackend.dto.UserRegisterDto;
 import com.petrotal.ahcbackend.service.security.AccessHistoryService;
 import com.petrotal.ahcbackend.service.security.UserService;
@@ -22,6 +23,7 @@ public class UserController {
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<ResponseDto> register(@Valid @RequestBody UserRegisterDto userRegisterDto) {
         userService.save(userRegisterDto);
+        accessHistoryService.logAccessHistory(null, "Guardado Datos de un Usuario");
         return new ResponseEntity<>(
                 new ResponseDto(
                         "Datos guardados correctamente.",
@@ -32,9 +34,11 @@ public class UserController {
     @GetMapping("/profile")
     @PreAuthorize("hasAnyAuthority('ADMIN', 'REGISTER', 'FIELD_MANAGER', 'LOGISTICS_COORDINATOR', 'PRODUCTION_SUPERINTENDENT', 'STORE')")
     public ResponseEntity<ResponseDto> getProfile() {
+        UserProfileDto profile = userService.getProfile();
+        accessHistoryService.logAccessHistory(null, "Consultado los Datos del Usuario con el Username: " + profile.username());
         return new ResponseEntity<>(
                 new ResponseDto(
-                        userService.getProfile(),
+                        profile,
                         true)
                 , HttpStatus.OK);
     }
@@ -42,9 +46,11 @@ public class UserController {
     @GetMapping("/access-history")
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<ResponseDto> getAccessHistory() {
+        String accessHistory = accessHistoryService.getAccessHistory(accessHistoryService.getAll());
+        accessHistoryService.logAccessHistory(null, "Consultado el Archivo de Historial de Accesos");
         return new ResponseEntity<>(
                 new ResponseDto(
-                        accessHistoryService.getAccessHistory(accessHistoryService.getAll()),
+                        accessHistory,
                         true)
                 , HttpStatus.OK);
     }
