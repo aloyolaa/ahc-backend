@@ -57,7 +57,7 @@ public class DataController {
     @PreAuthorize("hasAnyAuthority('FIELD_MANAGER', 'LOGISTICS_COORDINATOR', 'PRODUCTION_SUPERINTENDENT', 'STORE')")
     public ResponseEntity<ResponseDto> getDetail(@PathVariable String voucherNumber) {
         DataViewDto dataViewDto = dataMapper.toDataViewDto(dataAccessService.findByVoucherNumber(voucherNumber));
-        accessHistoryService.logAccessHistory(null, "Consultado los Detalle del Vale con el Número: " + voucherNumber);
+        accessHistoryService.logAccessHistory(null, "Consultado el Detalle del Vale con el Número: " + voucherNumber);
         return new ResponseEntity<>(
                 new ResponseDto(
                         dataViewDto,
@@ -70,7 +70,7 @@ public class DataController {
     @PreAuthorize("hasAuthority('REGISTER')")
     public ResponseEntity<ResponseDto> getNextVoucherNumber() {
         int nextVoucherNumber = dataAccessService.getNextVoucherNumber();
-        accessHistoryService.logAccessHistory(null, "Consultado el siguiente Número de Vale");
+        accessHistoryService.logAccessHistory(null, "Consultado el próximo Número de Vale");
         return new ResponseEntity<>(
                 new ResponseDto(
                         nextVoucherNumber,
@@ -122,7 +122,7 @@ public class DataController {
     @PreAuthorize("hasAuthority('REGISTER')")
     public ResponseEntity<ResponseDto> getReport(@PathVariable String voucherNumber) {
         String report = reportGenerator.generateReport(voucherNumber);
-        accessHistoryService.logAccessHistory(null, "Consultado la cantidad de Vales que tiene pendiente la firma de su cargo");
+        accessHistoryService.logAccessHistory(null, "Generado el PDF del Vale con el Número: " + voucherNumber);
         return new ResponseEntity<>(
                 new ResponseDto(
                         report,

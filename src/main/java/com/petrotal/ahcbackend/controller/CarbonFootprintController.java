@@ -89,7 +89,7 @@ public class CarbonFootprintController {
     @PreAuthorize("hasAuthority('REGISTER')")
     public ResponseEntity<ResponseDto> getAllVariables() {
         CarbonFootprintVariablesDto allVariables = carbonFootprintService.getAllVariables();
-        accessHistoryService.logAccessHistory(null, "Consultado todos loa Datos de Factores de Emisión y Potenciales de Calentamiento Global");
+        accessHistoryService.logAccessHistory(null, "Consultado todos los Datos de Factores de Emisión y Potenciales de Calentamiento Global");
         return new ResponseEntity<>(
                 new ResponseDto(
                         allVariables
