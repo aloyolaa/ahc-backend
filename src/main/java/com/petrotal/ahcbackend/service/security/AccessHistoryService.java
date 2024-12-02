@@ -5,7 +5,7 @@ import com.petrotal.ahcbackend.entity.AccessHistory;
 import java.util.List;
 
 public interface AccessHistoryService {
-    List<AccessHistory> getAll();
+    List<AccessHistory> getAll(Integer month);
 
     void save(AccessHistory accessHistory);
 

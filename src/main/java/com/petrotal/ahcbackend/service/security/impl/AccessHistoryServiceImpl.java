@@ -26,8 +26,8 @@ public class AccessHistoryServiceImpl implements AccessHistoryService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<AccessHistory> getAll() {
-        return accessHistoryRepository.findByOrderByDateAccessDesc();
+    public List<AccessHistory> getAll(Integer month) {
+        return accessHistoryRepository.findByOrderByDateAccessDesc(month);
     }
 
     @Override

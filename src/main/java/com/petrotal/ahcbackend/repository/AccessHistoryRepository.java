@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface AccessHistoryRepository extends JpaRepository<AccessHistory, Long> {
-    @Query("select a from AccessHistory a order by a.dateAccess DESC")
-    List<AccessHistory> findByOrderByDateAccessDesc();
-
+    @Query("select a from AccessHistory a where extract(month from a.dateAccess) = ?1 order by a.dateAccess DESC")
+    List<AccessHistory> findByOrderByDateAccessDesc(Integer month);
 }
