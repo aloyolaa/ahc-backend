@@ -43,11 +43,11 @@ public class UserController {
                 , HttpStatus.OK);
     }
 
-    @GetMapping("/access-history")
+    @GetMapping("/access-history/{month}")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<ResponseDto> getAccessHistory() {
-        String accessHistory = accessHistoryService.getAccessHistory(accessHistoryService.getAll());
-        accessHistoryService.logAccessHistory(null, "Consultado el Archivo de Historial de Accesos");
+    public ResponseEntity<ResponseDto> getAccessHistory(@PathVariable Integer month) {
+        String accessHistory = accessHistoryService.getAccessHistory(accessHistoryService.getAll(month));
+        accessHistoryService.logAccessHistory(null, "Consultado el Archivo de Historial de Accesos del Mes: " + month);
         return new ResponseEntity<>(
                 new ResponseDto(
                         accessHistory,
