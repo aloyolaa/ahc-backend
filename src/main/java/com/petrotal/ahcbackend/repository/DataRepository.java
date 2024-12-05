@@ -44,6 +44,21 @@ public interface DataRepository extends JpaRepository<Data, Long> {
 
     @Query("""
             select d from Data d
+            where d.dispatchDate between ?1 and ?2 and upper(d.status) = upper(?3)""")
+    List<Data> findByDispatchDateBetweenAndStatus(LocalDate dispatchDateStart, LocalDate dispatchDateEnd, String status);
+
+    @Query("""
+            select d from Data d
+            where d.area.id = ?1 and d.dispatchDate between ?2 and ?3 and upper(d.status) = upper(?4)""")
+    List<Data> findByAreaAndDispatchDateBetweenAndStatus(Long areaId, LocalDate dispatchDateStart, LocalDate dispatchDateEnd, String status);
+
+    @Query("""
+            select d from Data d
+            where d.contractor.id = ?1 and d.dispatchDate between ?2 and ?3 and upper(d.status) = upper(?4)""")
+    List<Data> findByContractorAndDispatchDateBetweenAndStatus(Long contractorId, LocalDate dispatchDateStart, LocalDate dispatchDateEnd, String status);
+
+    @Query("""
+            select d from Data d
             where d.area.id = ?1 and d.contractor.id = ?2 and d.dispatchDate between ?3 and ?4 and upper(d.status) = upper(?5)""")
     List<Data> findByAreaAndContractorAndDispatchDateBetweenAndStatus(Long areaId, Long contractorId, LocalDate dispatchDateStart, LocalDate dispatchDateEnd, String status);
 }
