@@ -44,7 +44,19 @@ public class DataAccessServiceImpl implements DataAccessService {
     @Transactional(readOnly = true)
     public List<DataListDto> findByFilter(Long areaId, Long contractorId, LocalDate dispatchDateStart, LocalDate dispatchDateEnd, String status) {
         try {
-            return dataMapper.toDataListDtos(dataRepository.findByAreaAndContractorAndDispatchDateBetweenAndStatus(areaId, contractorId, dispatchDateStart, dispatchDateEnd, status));
+            List<Data> data = null;
+
+            if (areaId == 0 && contractorId > 0) {
+                data = dataRepository.findByContractorAndDispatchDateBetweenAndStatus(contractorId, dispatchDateStart, dispatchDateEnd, status);
+            } else if (areaId > 0 && contractorId == 0) {
+                data = dataRepository.findByAreaAndDispatchDateBetweenAndStatus(areaId, dispatchDateStart, dispatchDateEnd, status);
+            } else if (areaId == 0 && contractorId == 0) {
+                data = dataRepository.findByDispatchDateBetweenAndStatus(dispatchDateStart, dispatchDateEnd, status);
+            } else {
+                data = dataRepository.findByAreaAndContractorAndDispatchDateBetweenAndStatus(areaId, contractorId, dispatchDateStart, dispatchDateEnd, status);
+            }
+
+            return dataMapper.toDataListDtos(data);
         } catch (DataAccessException | TransactionException e) {
             throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde.");
         }
