@@ -1,8 +1,7 @@
 package com.petrotal.ahcbackend.service.security.impl;
 
-import com.petrotal.ahcbackend.dto.UserProfileDto;
-import com.petrotal.ahcbackend.dto.UserRegisterDto;
-import com.petrotal.ahcbackend.dto.UserSignatoryDto;
+import com.petrotal.ahcbackend.dto.*;
+import com.petrotal.ahcbackend.entity.Role;
 import com.petrotal.ahcbackend.entity.User;
 import com.petrotal.ahcbackend.exception.DataAccessExceptionImpl;
 import com.petrotal.ahcbackend.mapper.UserMapper;
@@ -18,12 +17,24 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionException;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class UseServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<UserListDto> findAllEnabled() {
+        try {
+            return userMapper.toUserListDtos(userRepository.findByEnabledTrueOrderByUsernameAsc());
+        } catch (DataAccessException | TransactionException e) {
+            throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde.");
+        }
+    }
 
     @Override
     @Transactional(readOnly = true)
@@ -64,23 +75,23 @@ public class UseServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public UserSignatoryDto findByRole(String role) {
-        try {
-            return userMapper.toUserSignatoryDto(
-                    userRepository.findByRoleAndEnabledTrueOrderByHierarchyAsc(role)
-                            .orElseThrow(() -> new EntityNotFoundException("No existe un usuario con el rol: " + role + " activo.")));
-        } catch (DataAccessException | TransactionException e) {
-            throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde." + e.getMessage());
-        }
-    }
-
-    @Override
     @Transactional
     public User save(UserRegisterDto userRegisterDto) {
         User user = userMapper.toUser(userRegisterDto);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
+    }
+
+    @Override
+    @Transactional
+    public User update(UserUpdateDto userUpdateDto, String username) {
+        User byUsername = findByUsername(username);
+        byUsername.setPassword(passwordEncoder.encode(userUpdateDto.password()));
+        byUsername.setFirstName(userUpdateDto.firstName().toUpperCase());
+        byUsername.setLastName(userUpdateDto.lastName().toUpperCase());
+        byUsername.setEmail(userUpdateDto.email());
+        byUsername.setRole(new Role(userUpdateDto.role(), null));
+        return userRepository.save(byUsername);
     }
 
     @Override
@@ -98,6 +109,18 @@ public class UseServiceImpl implements UserService {
     public Boolean existsByEmail(String email) {
         try {
             return userRepository.existsByEmailIgnoreCase(email);
+        } catch (DataAccessException | TransactionException e) {
+            throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde.");
+        }
+    }
+
+    @Override
+    @Transactional
+    public void delete(String username) {
+        try {
+            if (Boolean.TRUE.equals(userRepository.existsByUsernameIgnoreCase(username))) {
+                userRepository.updateEnabledByUsernameIgnoreCase(username);
+            }
         } catch (DataAccessException | TransactionException e) {
             throw new DataAccessExceptionImpl("Error al acceder a los datos. Inténtelo mas tarde.");
         }

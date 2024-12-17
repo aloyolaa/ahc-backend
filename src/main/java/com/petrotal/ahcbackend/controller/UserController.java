@@ -1,8 +1,6 @@
 package com.petrotal.ahcbackend.controller;
 
-import com.petrotal.ahcbackend.dto.ResponseDto;
-import com.petrotal.ahcbackend.dto.UserProfileDto;
-import com.petrotal.ahcbackend.dto.UserRegisterDto;
+import com.petrotal.ahcbackend.dto.*;
 import com.petrotal.ahcbackend.service.security.AccessHistoryService;
 import com.petrotal.ahcbackend.service.security.UserService;
 import jakarta.validation.Valid;
@@ -12,12 +10,26 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/user")
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
     private final AccessHistoryService accessHistoryService;
+
+    @GetMapping("/")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<ResponseDto> getAll() {
+        List<UserListDto> allEnabled = userService.findAllEnabled();
+        accessHistoryService.logAccessHistory(null, "Consultado la Lista de Usuarios Habilitados");
+        return new ResponseEntity<>(
+                new ResponseDto(
+                        allEnabled,
+                        true)
+                , HttpStatus.OK);
+    }
 
     @PostMapping("/register")
     @PreAuthorize("hasAuthority('ADMIN')")
@@ -27,6 +39,30 @@ public class UserController {
         return new ResponseEntity<>(
                 new ResponseDto(
                         "Datos guardados correctamente.",
+                        true)
+                , HttpStatus.OK);
+    }
+
+    @PutMapping("/update/{username}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<ResponseDto> update(@Valid @RequestBody UserUpdateDto userUpdateDto, @PathVariable String username) {
+        userService.update(userUpdateDto, username);
+        accessHistoryService.logAccessHistory(null, "Actualizado Datos de un Usuario con el username: " + username);
+        return new ResponseEntity<>(
+                new ResponseDto(
+                        "Datos actualizados correctamente.",
+                        true)
+                , HttpStatus.OK);
+    }
+
+    @DeleteMapping("/delete/{username}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<ResponseDto> delete(@PathVariable String username) {
+        userService.delete(username);
+        accessHistoryService.logAccessHistory(null, "Deshabilitado al Usuario con el username: " + username);
+        return new ResponseEntity<>(
+                new ResponseDto(
+                        "Usuario inhabilitado.",
                         true)
                 , HttpStatus.OK);
     }

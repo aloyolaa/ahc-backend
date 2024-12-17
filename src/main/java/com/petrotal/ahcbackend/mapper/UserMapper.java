@@ -1,11 +1,11 @@
 package com.petrotal.ahcbackend.mapper;
 
-import com.petrotal.ahcbackend.dto.UserProfileDto;
-import com.petrotal.ahcbackend.dto.UserRegisterDto;
-import com.petrotal.ahcbackend.dto.UserSignatoryDto;
+import com.petrotal.ahcbackend.dto.*;
 import com.petrotal.ahcbackend.entity.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+
+import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {
@@ -17,8 +17,7 @@ public interface UserMapper {
     User toUser(UserRegisterDto userRegisterDto);
 
     @Mapping(target = "role", source = "role.name")
-    UserSignatoryDto toUserSignatoryDto(User user);
-
-    @Mapping(target = "role", source = "role.name")
     UserProfileDto toUserProfileDto(User user);
+
+    List<UserListDto> toUserListDtos(List<User> users);
 }
